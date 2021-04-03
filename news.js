@@ -17,7 +17,7 @@ let topitems = [];
 let topitemsstore = [];
 
 
-function compareNumbers(a, b) {
+function CompareNumbers(a, b) {
   if(parseInt(a.id) < parseInt(b.id)) return 1;
   if(parseInt(a.id) > parseInt(b.id)) return -1;
   return 0;
@@ -34,10 +34,10 @@ function FetchThread(id) {
   }
 }
 
-function intervalFunc() {
-    let store = [];
-    let topitems = [];
-    let topitemsstore = [];
+function FrontpageInterval() {
+    store = [];
+    topitems = [];
+    topitemsstore = [];
     subforums.forEach(element => {
       let response = fetch("https://api.knockout.chat/subforum/"+element);
       console.log(response)
@@ -51,7 +51,6 @@ function intervalFunc() {
         
       });
     });
-
     topitemsstore = store;
     topitemsstore.sort(function (a, b) {
       return b.viewers - a.viewers;
@@ -62,13 +61,12 @@ function intervalFunc() {
     }
 }
 
-setInterval(intervalFunc, 300000);
+FrontpageInterval()
+setInterval(FrontpageInterval, 300000);
 
 
 app.get('/', (req, res) => {
-
-
-  store.sort(compareNumbers)
+  store.sort(CompareNumbers) // This is bad, but needed for now
   res.render('news_index', { items: store, top: topitems })
 })
 
