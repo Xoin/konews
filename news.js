@@ -5,7 +5,9 @@ const app = express()
 const port = 8855
 const bbcode = require('./bbcode');
 
+// subforum ids
 const subforums = [3, 4, 5, 6];
+const kourl = "https://api.knockout.chat/"
 
 // Main storage
 let storage = {
@@ -13,7 +15,7 @@ let storage = {
   menusubforum: [], // Menu links to subforums
   thread: [], // thread/article we keep in memory for faster loading
   threadid: [], // thread numbers
-  threadidvalid: [], // validones
+  threadidvalid: [], // storage of ids that can be viewed so it doesn't become a generic proxy
   topitems: [] // threads with many viewers
 }
 
@@ -31,18 +33,19 @@ function CompareNumbers(a, b) {
   return 0;
 }
 
+// forum thread loader and storer
 function FetchThread(id) {
   if (storage.threadid.includes(id)) {
     console.log("loaded " + id)
   }
   else {
-    let response = fetch("https://api.knockout.chat/" + 'thread/' + id);
+    let response = fetch(`${kourl}thread/${id}`);
     let data = response.json()
     if (data.message || data.totalPosts == 0) {
       return false;
     }
     else {
-      // convert bbcode
+      // convert bbcode, could just foreach
       for (let index = 0; index < data.posts.length; index++) {
         data.posts[index].content = bbcode.render(data.posts[index].content)
       }
@@ -54,9 +57,10 @@ function FetchThread(id) {
   return storage.thread[id]; // bad idea as it could not exist
 }
 
+// frontpage lister
 function FrontpageInterval() {
   subforums.forEach(element => {
-    let response = fetch("https://api.knockout.chat/subforum/" + element);
+    let response = fetch(`${kourl}subforum/${element}`);
     let targetssubforums = response.json()
     if(storage.menusubforum[element]==undefined)
     {
@@ -79,18 +83,21 @@ function FrontpageInterval() {
   for (let index = 0; index < maxtopitems; index++) {
     storage.topitems.push(storage.subforum[index])
   }
+
+  // sort threads
   storage.subforum.sort(CompareNumbers)
 
   console.log("frontpage refresh done")
 }
 
+// purges articles
 function ArticleInterval() {
   storage.threadstore = [];
   storage.threadid = [];
   console.log("article purge done")
 }
 
-// setup and update loop stuff
+// setup
 FrontpageInterval()
 
 // refresh frontpage
