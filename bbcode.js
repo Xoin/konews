@@ -56,6 +56,16 @@ tags.quote = (obj)=>{
 
 // insert stolen kopunch.club parser
 
+function render (text) {
+    let temptext = ""
+    let render = render_bbcode(parse_bbcode(text, tags,2));
+    render.forEach(element => {
+        temptext+=element
+    });
+    temptext = temptext.replace(/\n/g, '<br>')
+    return temptext;
+};
+
 module.exports = {
     render: render
 };
