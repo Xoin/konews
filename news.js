@@ -6,15 +6,23 @@ const port = 8855
 const bbcode = require('./bbcode');
 
 const subforums = [3, 4, 5, 6];
-let store = [];
-let threadstore = [];
-let topitems = [];
-let topitemsstore = [];
+
+// Main storage
+let storage = {
+  subforum: [], // Complete firstpages of subforums
+  menusubforum: [], // Menu links to subforums
+  thread: [], // thread/article we keep in memory for faster loading
+  threadid: [], // thread numbers
+  threadidvalid: [], // validones
+  topitems: [] // threads with many viewers
+}
+
 // How long is our memory
 const frontpageintervaltime = 900000;
 // const frontpageintervaltime = 90000000000000000000000000000000; // debug is fun!
 const articleintervaltime = 300000;
 // const articleintervaltime = 30000000000000000000000000000000; // debug is fun!
+const maxtopitems = 6
 
 // Reverse sort array
 function CompareNumbers(a, b) {
@@ -24,57 +32,61 @@ function CompareNumbers(a, b) {
 }
 
 function FetchThread(id) {
-  let stored;
-  threadstore.forEach(element => {
-    if (element.id == id) {
-      console.log("loaded " + id)
-      stored = element;
-    }
-  });
-  if (!stored) {
+  if (storage.threadid.includes(id)) {
+    console.log("loaded " + id)
+  }
+  else {
     let response = fetch("https://api.knockout.chat/" + 'thread/' + id);
     let data = response.json()
     if (data.message || data.totalPosts == 0) {
       return false;
     }
     else {
+      // convert bbcode
+      for (let index = 0; index < data.posts.length; index++) {
+        data.posts[index].content = bbcode.render(data.posts[index].content)
+      }
       console.log("saved " + id)
-      threadstore.push(data)
-      stored = data;
+      storage.threadid.push(id)
+      storage.thread[id] = data
     }
   }
-  return stored;
+  return storage.thread[id]; // bad idea as it could not exist
 }
 
 function FrontpageInterval() {
-  store = [];
-  topitems = [];
-  topitemsstore = [];
   subforums.forEach(element => {
     let response = fetch("https://api.knockout.chat/subforum/" + element);
-    let threads = response.json()
-    threads.threads.forEach(element => {
+    let targetssubforums = response.json()
+    if(storage.menusubforum[element]==undefined)
+    {
+      //storage.menusubforum[element] = {id:element.id,subname:element.name}
+    }
+    targetssubforums.threads.forEach(element => {
       element.viewers = (element.viewers.memberCount + element.viewers.guestCount)
       if (!element.pinned && !element.locked) {
-        store.push(element)
+        //storage.threadidvalid.push(element.id)
+        storage.subforum.push(element) // we really need to group by date
       }
-
     });
   });
-  topitemsstore = store;
-  topitemsstore.sort(function (a, b) {
+  // sort of we can store most viewed
+  storage.subforum.sort(function (a, b) {
     return b.viewers - a.viewers;
   });
 
   // jus loop it for now
-  for (let index = 0; index < 6; index++) {
-    topitems.push(topitemsstore[index])
+  for (let index = 0; index < maxtopitems; index++) {
+    storage.topitems.push(storage.subforum[index])
   }
+  storage.subforum.sort(CompareNumbers)
+
   console.log("frontpage refresh done")
 }
 
 function ArticleInterval() {
-  threadstore = [];
+  storage.threadstore = [];
+  storage.threadid = [];
   console.log("article purge done")
 }
 
@@ -83,7 +95,7 @@ FrontpageInterval()
 
 // refresh frontpage
 setInterval(FrontpageInterval, frontpageintervaltime); // Refresh frontpage every 15 minutes
-setInterval(ArticleInterval, articleintervaltime); // clear threadstore every 5 minutes, just so we can reload without hammering knockout
+setInterval(ArticleInterval, articleintervaltime); // clear threadstore every 5 minutes, edit less and pug without hammerin the server
 
 // App stuff
 app.set('view engine', 'pug')
@@ -93,8 +105,8 @@ app.use('/less-css', expressLess(__dirname + '/less'));
 
 // Get page stuff
 app.get('/', (req, res) => {
-  store.sort(CompareNumbers) // This is bad, but needed for now
-  res.render('news_index', { items: store, top: topitems, page: 'home' })
+  //storage.subforum.sort(CompareNumbers) // Keeping this because sort can screw up
+  res.render('news_index', { items: storage.subforum, top: storage.topitems, page: 'home', menu: storage.menusubforum })
 })
 
 // reload the thread list
@@ -105,17 +117,22 @@ app.get('/refresh', (req, res) => {
 
 // sort it by hand
 app.get('/resort', (req, res) => {
-  store.sort(CompareNumbers)
+  storage.subforum.sort(CompareNumbers)
   res.redirect('/')
 })
 
 app.get('/view/:id', (req, res) => {
   console.log('reqeust for ' + req.params.id)
-  let thread = FetchThread(req.params.id);
-  for (let index = 0; index < thread.posts.length; index++) {
-    thread.posts[index].content = bbcode.render(thread.posts[index].content)
-  }
-  res.render("news_view", { thread: thread, page: 'article' })
+  //console.log(storage.menusubforum)
+  //console.log(storage.threadidvalid)
+  //if (storage.threadidvalid.includes(req.params.id))
+  //{
+    let thread = FetchThread(req.params.id);
+    res.render("news_view", { thread: thread, page: 'article', menu: storage.menusubforum })
+  //}
+  //else {
+  //  res.redirect('/');
+  //}
 })
 
 // Boring listen
