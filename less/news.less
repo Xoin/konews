@@ -1,59 +1,52 @@
 body {
     background: #4e4e4e;
 }
+
 .content {
-    max-width: 70em;
-    min-width: 10em;
+    background:white;
+    border-radius: 0em 0em 1em 1em;
     margin: auto;
     margin-top: 0em;
-    background:white;
+    max-width: 70em;
+    min-width: 10em;
     padding: 2em;
-    border-top-left-radius: 0em;
-    border-top-right-radius: 0em;
-    border-bottom-right-radius: 1em;
-    border-bottom-left-radius: 1em;
-}
-
-.article {
-    & img {
-        max-width: 100%;
-    }
 }
 
 news {
-    & .story {
+    & story {
         display: table-row;
         width: 36px;
         font: normal 0.9em arial,helvetica,"Liberation Sans","DejaVu Sans Condensed",sans-serif;
-
+        & a:hover, a.highlightlink {
+            text-decoration: underline;
+            color: #b9133c;
+        }
+        & a {
+            color: #024368;
+            text-decoration: none;
+        }
         & .icon {
             display: table-cell;
             padding: 5px;
             vertical-align: middle;
             border-bottom: 1px solid #e8eaea;
             & .forum {
-                &-3 {
+                &-3, &-4, &-5, &-6
+                {
                     width: 5px;
                     height: 5px;
                     margin-top: 2px;
+                }
+                &-3 {
                     background-color: #26b913;
                 }
                 &-4 {
-                    width: 5px;
-                    height: 5px;
-                    margin-top: 2px;
                     background-color: #1ab2e0;
                 }
                 &-5 {
-                    width: 5px;
-                    height: 5px;
-                    margin-top: 2px;
                     background-color: #ff9925;
                 }
                 &-6 {
-                    width: 5px;
-                    height: 5px;
-                    margin-top: 2px;
                     background-color: #bd1bee;
                 }
             }
@@ -95,13 +88,15 @@ highlights {
     }
 }
 
-a:hover, a.highlightlink {
-    text-decoration: underline;
-    color: #b9133c;
-}
-a {
-    color: #024368;
-    text-decoration: none;
+bbcode {
+    & blockquote {
+        background: rgb(228, 228, 228);
+        border-radius: 0.6em;
+        padding: 1em;
+    }
+    & img {
+        max-width: 100%;
+    }
 }
 
 h1, h2, h1 a, h2 a {
@@ -120,11 +115,7 @@ h1, h2 {
     line-height: 1.6;
 }
 
-blockquote {
-    background: rgb(228, 228, 228);
-    border-radius: 0.6em;
-    padding: 1em;
-}
+
 .acomments {
     width: 620px;
 }
@@ -136,9 +127,6 @@ blockquote {
     padding: 0.5em;
     font: normal 12px arial,helvetica,"Liberation Sans","DejaVu Sans Condensed",sans-serif;
     line-height: 1.6em;
-    & img {
-        max-width: 100%;
-    }
     & userinfo {
         display: table-row;
         & user {
@@ -157,10 +145,7 @@ blockquote {
     margin: auto;
     margin-bottom: 0em;
     padding: 2em;
-    border-top-left-radius: 1em;
-    border-top-right-radius: 1em;
-    border-bottom-right-radius: 0em;
-    border-bottom-left-radius: 0em;
+    border-radius: 1em 1em 0em 0em;
     height: 3em;
     background: #b41039 ;
     background-image: -webkit-linear-gradient(#b1113a,#b60e39 68px);
@@ -219,7 +204,7 @@ blockquote {
 
 }
 
-.spacer {
+spacer {
     border-top: 1px solid #d7dfdd;
     margin: 25px 0 19px;
 }
