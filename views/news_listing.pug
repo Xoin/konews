@@ -1,0 +1,9 @@
+news
+    each item in items
+        story
+            div(class="icon")
+                div(class="forum-"+item.subforumId)
+            div(class="time") #{item.createdAt}
+            div(class="title")
+                a(href="view/"+item.id) #{item.id} #{item.title}
+            div(class="comments") #{item.postCount-1}
