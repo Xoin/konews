@@ -12,6 +12,20 @@ body {
     padding: 2em;
 }
 
+.article {
+    & h1, & h2, & h1 a, & h2 a {
+        color: #b9133c;
+    }
+    & h1 {
+        font-size: 26px;
+        line-height: 31px;
+    }
+    & h1, & h2 {
+        font-family: "HelveticaNeue-CondensedBold","Helvetica Neue Bold Condensed","Roboto Bold Condensed","Arial Bold","Helvetica Bold","Liberation Sans Bold",arial,helvetica,sans-serif;
+        font-weight: normal;
+    }
+}
+
 news {
     & story {
         display: table-row;
@@ -99,45 +113,35 @@ bbcode {
     }
 }
 
-h1, h2, h1 a, h2 a {
-    color: #b9133c;
-}
-h1 {
-    font-size: 26px;
-    line-height: 31px;
-}
-h1, h2 {
-    font-family: "HelveticaNeue-CondensedBold","Helvetica Neue Bold Condensed","Roboto Bold Condensed","Arial Bold","Helvetica Bold","Liberation Sans Bold",arial,helvetica,sans-serif;
-    font-weight: normal;
-}
 .textbody {
     font-size: 13px;
     line-height: 1.6;
 }
 
 
-.acomments {
+replys {
     width: 620px;
-}
-
-.commentbody {
-    border: 1px solid #dbdede;
-    overflow: hidden;
-    margin: 1em;
-    padding: 0.5em;
-    font: normal 12px arial,helvetica,"Liberation Sans","DejaVu Sans Condensed",sans-serif;
-    line-height: 1.6em;
-    & userinfo {
-        display: table-row;
-        & user {
-            display: table-cell;
-            font-weight: bold;
-        }
-        & time {
-            text-align: end;
+    .body {
+        border: 1px solid #dbdede;
+        overflow: hidden;
+        margin: 1em;
+        padding: 0.5em;
+        font: normal 12px arial,helvetica,"Liberation Sans","DejaVu Sans Condensed",sans-serif;
+        line-height: 1.6em;
+        & userinfo {
+            display: table-row;
+            & user {
+                display: table-cell;
+                font-weight: bold;
+            }
+            & time {
+                text-align: end;
+            }
         }
     }
 }
+
+
 
 .header {
     max-width: 70em;

@@ -40,11 +40,10 @@ function FrontpageInterval() {
     topitemsstore = [];
     subforums.forEach(element => {
       let response = fetch("https://api.knockout.chat/subforum/"+element);
-      console.log(response)
       let threads = response.json()
       threads.threads.forEach(element => {
         element.viewers= (element.viewers.memberCount+element.viewers.guestCount)
-        if(element.pinned != true && element.locked !=true)
+        if(!element.pinned && !element.locked)
         {
           store.push(element)
         }
@@ -56,6 +55,7 @@ function FrontpageInterval() {
       return b.viewers - a.viewers;
     });
     
+    // jus loop it for now
     for (let index = 0; index < 6; index++) {
       topitems.push(topitemsstore[index])
     }
@@ -63,7 +63,6 @@ function FrontpageInterval() {
 
 FrontpageInterval()
 setInterval(FrontpageInterval, 300000);
-
 
 app.get('/', (req, res) => {
   store.sort(CompareNumbers) // This is bad, but needed for now

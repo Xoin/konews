@@ -1,18 +1,17 @@
 include news_header.pug
-div(class="content")
     div(class="section")
         div(class="article")
             h1 #{thread.title}
             div(class="by")
-               p Posted by #{thread.user.username} on #{thread.posts[0].createdAt}
+            p Posted by #{thread.user.username} on #{thread.posts[0].createdAt}
             bbcode !{thread.posts[0].content}
         spacer
         h2 Comments (#{thread.postCount-1})
-        div(class="acomments")
-            each val in thread.posts
-                if val.id != thread.posts[0].id
-                    div(class="commentbody")
-                        bbcode !{val.content}
+        replys
+            each post in thread.posts
+                if post.id != thread.posts[0].id
+                    div(class="body")
+                        bbcode !{post.content}
                         userinfo
-                            user #{val.user.username}
-                            time #{val.createdAt}
+                            user #{post.user.username}
+                            time #{post.createdAt}
