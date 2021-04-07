@@ -6,10 +6,17 @@ const port = 8855
 const bbcode = require('./bbcode');
 const CentralDate = require('./CentralDate');
 const rundate = CentralDate.Get()
+const loglevel = 5;
 // subforum ids
 //const subforums = [4];
 const subforums = [3, 4, 5, 6];
 const kourl = "https://api.knockout.chat/"
+
+function Logger(type,level,message) {
+  if (level <= loglevel) {
+    console.log(type+"."+level+": "+message)
+  }
+}
 
 // Main storage
 let storage = {
@@ -37,8 +44,9 @@ function CompareNumbers(a, b) {
 
 // forum thread loader and storer
 function FetchThread(id) {
+  Logger("FetchThread",1,`Request ${id}`)
   if (storage.threadid.includes(id)) {
-    console.log("loaded " + id)
+    Logger("FetchThread",2,`Loaded ${id}`)
   }
   else {
     let response = fetch(`${kourl}thread/${id}`);
@@ -53,7 +61,7 @@ function FetchThread(id) {
         data.posts[index].content = bbcode.render(data.posts[index].content)
         data.posts[index].date = CentralDate.Get(data.posts[index].createdAt)
       }
-      console.log("saved " + id)
+      Logger("FetchThread",2,`Saved ${id}`)
       storage.threadid.push(id)
       storage.thread[id] = data
     }
@@ -63,6 +71,7 @@ function FetchThread(id) {
 
 // frontpage lister
 function FrontpageInterval() {
+  Logger("FrontpageInterval",1,"Request")
   storage.subforum =[];
   let tempstorage = {
     subforum: []
@@ -101,18 +110,18 @@ function FrontpageInterval() {
   // // sort threads
   storage.subforum.sort(CompareNumbers)
 
-  console.log("frontpage refresh done")
+  Logger("FrontpageInterval",1,"frontpage refresh done")
 }
 
 // purges articles
 function ArticleInterval() {
   storage.threadstore = [];
   storage.threadid = [];
-  console.log("article purge done")
+  Logger("Interval",1,"article purge done")
 }
 
 // setup
-console.log("Startup will be slow")
+Logger("Start",0,"Starting can be slow")
 FrontpageInterval()
 
 // refresh frontpage
@@ -127,23 +136,26 @@ app.use('/less-css', expressLess(__dirname + '/less'));
 
 // Get page stuff
 app.get('/', (req, res) => {
+  Logger("app/",2,"Frontpage load")
   res.render('news_index', { items: storage.subforum, top: storage.topitems, page: 'home', menu: storage.menusubforum })
 })
 
 // reload the thread list
 app.get('/refresh', (req, res) => {
+  Logger("app/refresh",1,"forcing refresh")
   FrontpageInterval()
   res.redirect('/')
 })
 
 // sort it by hand
 app.get('/resort', (req, res) => {
-  storage.subforum.sort(CompareNumbers)
+  Logger("app/resort",1,"forcing sorting")
+  storage.subforum.sort(CompareNumbers) // Broken?
   res.redirect('/')
 })
 
 app.get('/view/:id', (req, res) => {
-  console.log('reqeust for ' + req.params.id)
+  Logger("/view/:id",2,'reqeust for ' + req.params.id)
   //console.log(storage.menusubforum)
   //console.log(storage.threadidvalid)
   //if (storage.threadidvalid.includes(req.params.id))
@@ -158,5 +170,5 @@ app.get('/view/:id', (req, res) => {
 
 // Boring listen
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+  Logger("Start",0,`app listening at http://localhost:${port}`)
 })
