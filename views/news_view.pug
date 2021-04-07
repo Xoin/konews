@@ -12,7 +12,7 @@ block content
                     time #{thread.date.DayFull} #{thread.date.Date} #{thread.date.MonthFull} #{thread.date.Year}  #{thread.date.Hour}:#{thread.date.Minute} 
                 postlink
                     a(href="https://knockout.chat/thread/"+thread.id) ##{thread.id}
-            // Probably asking for XSS
+            spacer
             bbcode
                 each line in thread.posts[0].content
                     include bbcode.pug
@@ -30,7 +30,6 @@ block content
                                     time #{post.date.DayFull} #{post.date.Date} #{post.date.MonthFull} #{post.date.Year}  #{post.date.Hour}:#{post.date.Minute}
                                 postlink
                                     a(href="https://knockout.chat/thread/"+post.thread+"/"+post.page+"#post-"+post.id) ##{post.id}
-                        // Probably asking for XSS
                         bbcode
                             each line in post.content
                                 include bbcode.pug
