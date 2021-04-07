@@ -6,7 +6,7 @@ news
                 each storyitem in group.objects
                     story
                         div(class="icon")
-                            div(class="forum-"+storyitem.subforumId)
+                            div(class="forum-"+storyitem.subforumId) #{storyitem.subforumName}
                         div(class="time") #{storyitem.date.Hour}:#{storyitem.date.Minute}
                         div(class="title")
                             a(href="view/"+storyitem.id) #{storyitem.title}

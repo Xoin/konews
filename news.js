@@ -88,6 +88,7 @@ function FrontpageInterval() {
       let ThreadDate=CentralDate.Get(element.createdAt)
       element.date = ThreadDate
       element.dateshort = ThreadDate.Date+"-"+ThreadDate.Month+"-"+ThreadDate.Year
+      element.subforumName=targetssubforums.name
       if (!element.pinned && !element.locked && element.date.Year==rundate.Year&&element.date.Month >= (rundate.Month-2)) {
         //storage.threadidvalid.push(element.id)
         if (tempstorage.subforum[element.dateshort]==undefined){
