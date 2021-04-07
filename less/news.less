@@ -27,6 +27,7 @@ body {
 }
 
 news {
+    & day {
     & story {
         display: table-row;
         width: 36px;
@@ -39,53 +40,55 @@ news {
             color: #024368;
             text-decoration: none;
         }
-        & .icon {
-            display: table-cell;
-            padding: 5px;
-            vertical-align: middle;
-            border-bottom: 1px solid #e8eaea;
-            & .forum {
-                &-3, &-4, &-5, &-6
-                {
-                    width: 5px;
-                    height: 5px;
-                    margin-top: 2px;
-                }
-                &-3 {
-                    background-color: #26b913;
-                }
-                &-4 {
-                    background-color: #1ab2e0;
-                }
-                &-5 {
-                    background-color: #ff9925;
-                }
-                &-6 {
-                    background-color: #bd1bee;
+
+            & .icon {
+                display: table-cell;
+                padding: 5px;
+                vertical-align: middle;
+                border-bottom: 1px solid #e8eaea;
+                & .forum {
+                    &-3, &-4, &-5, &-6
+                    {
+                        width: 5px;
+                        height: 5px;
+                        margin-top: 2px;
+                    }
+                    &-3 {
+                        background-color: #26b913;
+                    }
+                    &-4 {
+                        background-color: #1ab2e0;
+                    }
+                    &-5 {
+                        background-color: #ff9925;
+                    }
+                    &-6 {
+                        background-color: #bd1bee;
+                    }
                 }
             }
-        }
-        & .time {
-            display: table-cell;
-            color: #828585;
-            padding: 7px 0;
-            border-bottom: 1px solid #e8eaea;
-        }
+            & .time {
+                display: table-cell;
+                color: #828585;
+                padding: 7px 0;
+                border-bottom: 1px solid #e8eaea;
+            }
+    
+            & .title {
+                display: table-cell;
+                width: 100%;
+                padding-left: 6px;
+                border-bottom: 1px solid #e8eaea;
+            }
 
-        & .title {
-            display: table-cell;
-            width: 100%;
-            padding-left: 6px;
-            border-bottom: 1px solid #e8eaea;
-        }
-
-        & .comments {
-            display: table-cell;
-            color: #828585;
-            text-align: end;
-            width:100%;
-            padding: 7px 0;
-            border-bottom: 1px solid #e8eaea;
+            & .comments {
+                display: table-cell;
+                color: #828585;
+                text-align: end;
+                width:100%;
+                padding: 7px 0;
+                border-bottom: 1px solid #e8eaea;
+            }
         }
     }
 }

@@ -1,9 +1,11 @@
 news
     each item in items
-        story
-            div(class="icon")
-                div(class="forum-"+item.subforumId)
-            div(class="time") #{item.date.Hour}:#{item.date.Minute}
-            div(class="title")
-                a(href="view/"+item.id) #{item.title}
-            div(class="comments") #{item.postCount-1}
+        day #{item.Date}-#{item.Month}-#{item.Year}
+            each item2 in item.objects
+                story
+                    div(class="icon")
+                        div(class="forum-"+item2.subforumId)
+                    div(class="time") #{item2.date.Hour}:#{item2.date.Minute}
+                    div(class="title")
+                        a(href="view/"+item2.id) #{item2.title}
+                    div(class="comments") #{item2.postCount-1}

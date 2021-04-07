@@ -6,6 +6,7 @@ const port = 8855
 const bbcode = require('./bbcode');
 
 // subforum ids
+//const subforums = [4];
 const subforums = [3, 4, 5, 6];
 const kourl = "https://api.knockout.chat/"
 
@@ -59,44 +60,49 @@ function FetchThread(id) {
 
 // frontpage lister
 function FrontpageInterval() {
+  let tempstorage = {
+    subforum: []
+  }
   subforums.forEach(element => {
     let response = fetch(`${kourl}subforum/${element}`);
     let targetssubforums = response.json()
-    if(storage.menusubforum[element]==undefined)
-    {
+    //if(storage.menusubforum[element]==undefined)
+    //{
       //storage.menusubforum[element] = {id:element.id,subname:element.name}
-    }
+    //}
     targetssubforums.threads.forEach(element => {
       element.viewers = (element.viewers.memberCount + element.viewers.guestCount)
       let tempdate = new Date(element.createdAt)
       let tempminutes = tempdate.getMinutes()
       let temphours= tempdate.getHours()
-      if (tempminutes < 10)
-      {
+      if (tempminutes < 10) {
         tempminutes="0"+tempminutes.toString()
       }
-      if (temphours < 10)
-      {
+      if (temphours < 10) {
         temphours="0"+temphours.toString()
       }
       element.date = {Hour:temphours,Minute:tempminutes,Date:tempdate.getDate(),Month:tempdate.getMonth(),Year:tempdate.getFullYear(),Day:tempdate.getDay()}
+      element.dateshort = tempdate.getDate().toString()+"-"+tempdate.getMonth()
       if (!element.pinned && !element.locked) {
         //storage.threadidvalid.push(element.id)
-        storage.subforum.push(element) // we really need to group by date
+        if (tempstorage.subforum[element.dateshort]==undefined){
+          tempstorage.subforum[element.dateshort] = {id:tempdate.getTime(),objects:[],Date:tempdate.getDate(),Month:tempdate.getMonth(),Year:tempdate.getFullYear(),Day:tempdate.getDay()}
+          tempstorage.subforum[element.dateshort].objects.push(element)
+        }
+        else {
+          tempstorage.subforum[element.dateshort].objects.push(element)
+        }
+        //storage.subforum.push(element) // we really need to group by date
       }
     });
   });
-  // sort of we can store most viewed
-  storage.subforum.sort(function (a, b) {
-    return b.viewers - a.viewers;
-  });
 
-  // jus loop it for now
-  for (let index = 0; index < maxtopitems; index++) {
-    storage.topitems.push(storage.subforum[index])
+  for (var key in tempstorage.subforum) {
+    tempstorage.subforum[key].objects.sort(CompareNumbers)
+    storage.subforum.push(tempstorage.subforum[key])
   }
 
-  // sort threads
+  // // sort threads
   storage.subforum.sort(CompareNumbers)
 
   console.log("frontpage refresh done")
@@ -125,6 +131,7 @@ app.use('/less-css', expressLess(__dirname + '/less'));
 // Get page stuff
 app.get('/', (req, res) => {
   //storage.subforum.sort(CompareNumbers) // Keeping this because sort can screw up
+  //console.log(storage.subforum)
   res.render('news_index', { items: storage.subforum, top: storage.topitems, page: 'home', menu: storage.menusubforum })
 })
 
