@@ -1,6 +1,10 @@
 div(class="menu")
     div(class="row")
-        div(class="menuitem active")
-            a(href="/") Home
+        if page == "home"
+            div(class="menuitem active")
+                a(href="/") Home
+        else
+            div(class="menuitem")
+                a(href="/") Home
         div(class="menuitem")
             a(href="/") News

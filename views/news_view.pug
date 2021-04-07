@@ -2,6 +2,7 @@ extends news_main.pug
 block content
     div(class="section")
         div(class="article")
+            forum
             h1 #{thread.title}
             userinfo
                 avatar
@@ -9,6 +10,8 @@ block content
                 misc
                     user #{thread.user.username}
                     time #{thread.date.DayFull} #{thread.date.Date} #{thread.date.MonthFull} #{thread.date.Year}  #{thread.date.Hour}:#{thread.date.Minute} 
+                postlink
+                    a(href="https://knockout.chat/thread/"+thread.id) ##{thread.id}
             // Probably asking for XSS
             bbcode !{thread.posts[0].content}
         spacer
@@ -22,6 +25,8 @@ block content
                                     img(src="https://cdn.knockout.chat/image/"+post.user.avatarUrl)
                                 misc
                                     user #{post.user.username}
-                                    time #{post.date.DayFull} #{post.date.Date} #{post.date.MonthFull} #{post.date.Year}  #{post.date.Hour}:#{post.date.Minute} 
+                                    time #{post.date.DayFull} #{post.date.Date} #{post.date.MonthFull} #{post.date.Year}  #{post.date.Hour}:#{post.date.Minute}
+                                postlink
+                                    a(href="https://knockout.chat/thread/"+post.thread+"/"+post.page+"#post-"+post.id) ##{post.id}
                         // Probably asking for XSS
                         bbcode !{post.content}
