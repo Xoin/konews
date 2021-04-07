@@ -68,6 +68,18 @@ function FrontpageInterval() {
     }
     targetssubforums.threads.forEach(element => {
       element.viewers = (element.viewers.memberCount + element.viewers.guestCount)
+      let tempdate = new Date(element.createdAt)
+      let tempminutes = tempdate.getMinutes()
+      let temphours= tempdate.getHours()
+      if (tempminutes < 10)
+      {
+        tempminutes="0"+tempminutes.toString()
+      }
+      if (temphours < 10)
+      {
+        temphours="0"+temphours.toString()
+      }
+      element.date = {Hour:temphours,Minute:tempminutes,Date:tempdate.getDate(),Month:tempdate.getMonth(),Year:tempdate.getFullYear(),Day:tempdate.getDay()}
       if (!element.pinned && !element.locked) {
         //storage.threadidvalid.push(element.id)
         storage.subforum.push(element) // we really need to group by date
