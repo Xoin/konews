@@ -4,7 +4,7 @@ block content
         div(class="article")
             h1 #{thread.title}
             div(class="by")
-            p Posted by #{thread.user.username} on #{thread.posts[0].createdAt}
+            p Posted by #{thread.user.username} on #{thread.date.Hour}:#{thread.date.Minute} #{thread.date.DayFull} #{thread.date.Date} #{thread.date.MonthFull}
             bbcode !{thread.posts[0].content}
         spacer
         h2 Comments (#{thread.postCount-1})

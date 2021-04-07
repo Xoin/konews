@@ -4,7 +4,8 @@ const fetch = require('sync-fetch');
 const app = express()
 const port = 8855
 const bbcode = require('./bbcode');
-
+const CentralDate = require('./CentralDate');
+const rundate = CentralDate.Get()
 // subforum ids
 //const subforums = [4];
 const subforums = [3, 4, 5, 6];
@@ -47,8 +48,10 @@ function FetchThread(id) {
     }
     else {
       // convert bbcode, could just foreach
+      data.date = CentralDate.Get(data.createdAt)
       for (let index = 0; index < data.posts.length; index++) {
         data.posts[index].content = bbcode.render(data.posts[index].content)
+        data.posts[index].date = CentralDate.Get(data.posts[index].createdAt)
       }
       console.log("saved " + id)
       storage.threadid.push(id)
@@ -72,21 +75,13 @@ function FrontpageInterval() {
     //}
     targetssubforums.threads.forEach(element => {
       element.viewers = (element.viewers.memberCount + element.viewers.guestCount)
-      let tempdate = new Date(element.createdAt)
-      let tempminutes = tempdate.getMinutes()
-      let temphours= tempdate.getHours()
-      if (tempminutes < 10) {
-        tempminutes="0"+tempminutes.toString()
-      }
-      if (temphours < 10) {
-        temphours="0"+temphours.toString()
-      }
-      element.date = {Hour:temphours,Minute:tempminutes,Date:tempdate.getDate(),Month:tempdate.getMonth(),Year:tempdate.getFullYear(),Day:tempdate.getDay()}
-      element.dateshort = tempdate.getDate().toString()+"-"+tempdate.getMonth()
-      if (!element.pinned && !element.locked) {
+      let ThreadDate=CentralDate.Get(element.createdAt)
+      element.date = ThreadDate
+      element.dateshort = ThreadDate.Date+"-"+ThreadDate.Month+"-"+ThreadDate.Year
+      if (!element.pinned && !element.locked && element.date.Year==rundate.Year&&element.date.Month >= (rundate.Month-2)) {
         //storage.threadidvalid.push(element.id)
         if (tempstorage.subforum[element.dateshort]==undefined){
-          tempstorage.subforum[element.dateshort] = {id:tempdate.getTime(),objects:[],Date:tempdate.getDate(),Month:tempdate.getMonth(),Year:tempdate.getFullYear(),Day:tempdate.getDay()}
+          tempstorage.subforum[element.dateshort] = {id:ThreadDate.Time,objects:[],date:ThreadDate}
           tempstorage.subforum[element.dateshort].objects.push(element)
         }
         else {
@@ -116,6 +111,7 @@ function ArticleInterval() {
 }
 
 // setup
+console.log("Startup will be slow")
 FrontpageInterval()
 
 // refresh frontpage

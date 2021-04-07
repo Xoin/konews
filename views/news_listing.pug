@@ -1,6 +1,7 @@
 news
     each item in items
-        day #{item.Date}-#{item.Month}-#{item.Year}
+        day
+            h2 #{item.date.DayFull} #{item.date.Date} #{item.date.MonthFull}
             each item2 in item.objects
                 story
                     div(class="icon")
