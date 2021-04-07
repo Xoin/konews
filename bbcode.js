@@ -1,14 +1,33 @@
 const tags = {}
 const block_tags = {}
 const noparse_tags = {}
-tags.b = (obj)=>{
-    return "<b>"+obj.content+"</b>"
+tags.b = (obj) => { return obj; }
+tags.u = (obj) => { return obj; }
+tags.i = (obj) => { return obj; }
+tags.h1 = (obj) => { return obj; }
+tags.h2 = (obj) => { return obj; }
+tags.h3 = (obj) => { return obj; }
+tags.li = (obj) => { return obj; }
+tags.ul = (obj) => { return obj; }
+tags.img = (obj) => {console.log(obj); return obj; }
+tags.url = (obj) => {console.log(obj); return obj; }
+tags.twitter = (obj) => { return obj; }
+tags.youtube = (obj) => { return obj; }
+tags.blockquote = (obj) => { return obj; }
+tags.spoiler = (obj) => { return obj; }
+tags.quote = (obj) => { return obj; }
+tags.code = (obj) => { return obj; }
+tags.newline = (obj) => { return { tag: "newline" } }
+
+function find_first_of(text, items, start) {
+    let min = -1
+    for (const item of items) {
+        let i = text.indexOf(item, start)
+        if (min === -1 || (i !== -1 && i < min)) {
+            min = i
 }
-tags.u = (obj)=>{
-    return "<u>"+obj.content+"</u>"
 }
-tags.i = (obj)=>{
-    return "<i>"+obj.content+"</i>"
+    return min
 }
 
 tags.h1 = (obj)=>{
@@ -62,18 +81,15 @@ tags.quote = (obj)=>{
     return "<blockquote><userinfo><user>"+obj.attrs.username+"</user></userinfo>"+obj.content+"</blockquote>"
 }
 
-tags.code = (obj)=>{
-    return "<div class='code'><pre>"+obj.content+"</pre></div>"
-}
+function render(text) {
+    let temptext = text.replace(/\n/g, '[newline][/newline]')
+    let result = []
+    let ouput = render_bbcode(parse_bbcode(temptext, tags, 2))
 
-function render (text) {
-    let temptext = ""
-    let render = render_bbcode(parse_bbcode(text, tags,2));
-    render.forEach(element => {
-        temptext+=element
+    ouput.forEach(keep => {
+        result.push(keep)
     });
-    temptext = temptext.replace(/\n/g, '<br>')
-    return temptext;
+    return result;
 };
 
 module.exports = {

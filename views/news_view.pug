@@ -13,7 +13,9 @@ block content
                 postlink
                     a(href="https://knockout.chat/thread/"+thread.id) ##{thread.id}
             // Probably asking for XSS
-            bbcode !{thread.posts[0].content}
+            bbcode
+                each line in thread.posts[0].content
+                    include bbcode.pug
         spacer
         h2 Comments (#{thread.postCount-1})
         replys
@@ -29,4 +31,6 @@ block content
                                 postlink
                                     a(href="https://knockout.chat/thread/"+post.thread+"/"+post.page+"#post-"+post.id) ##{post.id}
                         // Probably asking for XSS
-                        bbcode !{post.content}
+                        bbcode
+                            each line in post.content
+                                include bbcode.pug

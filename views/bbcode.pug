@@ -1,0 +1,12 @@
+case line.tag
+    when "blockquote"
+        blockquote
+            each parse in line.content
+                include bbcode_tags.pug
+    when "quote"
+        blockquote
+            each parse in line.content
+                include bbcode_tags.pug
+    default
+        - var parse = line
+        include bbcode_tags.pug

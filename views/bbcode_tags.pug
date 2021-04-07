@@ -1,0 +1,35 @@
+case parse.tag
+    when "newline"
+        br
+    when "i"
+        i #{parse.inner}
+    when "b"
+        b #{parse.inner}
+    when "u"
+        u #{parse.inner}
+    when "li"
+        u #{parse.inner}
+    when "ul"
+        u #{parse.inner}
+    when "img"
+        if parse.attrs.thumbnail
+            img(src=parse.inner, alt="",class="thumb")
+        else
+            img(src=parse.inner, alt="")
+    when "spoiler"
+        spoiler #{parse.content}
+    when "url"
+        if parse.inner
+            a(href=parse.attrs.href) #{parse.inner}
+        else
+            a(href=parse.attrs.href)  #{parse.attrs.href}
+    when "twitter"
+        a(href=parse.inner)  #{parse.inner}
+    when "youtube"
+        a(href=parse.inner)  #{parse.inner}
+    when "code"
+        div(class="code")
+            pre #{parse.inner}
+    default
+        .
+            #{parse}
