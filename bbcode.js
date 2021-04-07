@@ -22,11 +22,17 @@ tags.h3 = (obj)=>{
 }
 
 tags.img = (obj)=>{
+    if (obj.attrs.thumbnail)
+    {
+        return '<img class="thumb" src="'+obj.inner+'" />'
+    }
+    else{
     return '<img src="'+obj.inner+'" />'
 }
 
+}
+
 tags.url = (obj)=>{
-    console.log(obj)
     if(obj.inner=="")
     {
         return '<a href="'+obj.attrs.href+'">'+obj.attrs.href+'</a>'
@@ -45,16 +51,20 @@ tags.youtube = (obj)=>{
     return '<a href="'+obj.content+'">'+obj.content+'</a>'
 }
 
-
 tags.blockquote = (obj)=>{
     return "<blockquote>"+obj.content+"</blockquote>"
+}
+tags.spoiler = (obj)=>{
+    return "<spoiler>"+obj.content+"</spoiler>"
 }
 
 tags.quote = (obj)=>{
     return "<blockquote><userinfo><user>"+obj.attrs.username+"</user></userinfo>"+obj.content+"</blockquote>"
 }
 
-// insert stolen kopunch.club parser
+tags.code = (obj)=>{
+    return "<div class='code'><pre>"+obj.content+"</pre></div>"
+}
 
 function render (text) {
     let temptext = ""

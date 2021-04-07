@@ -126,8 +126,6 @@ app.use('/less-css', expressLess(__dirname + '/less'));
 
 // Get page stuff
 app.get('/', (req, res) => {
-  //storage.subforum.sort(CompareNumbers) // Keeping this because sort can screw up
-  //console.log(storage.subforum)
   res.render('news_index', { items: storage.subforum, top: storage.topitems, page: 'home', menu: storage.menusubforum })
 })
 

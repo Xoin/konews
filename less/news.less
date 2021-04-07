@@ -149,6 +149,23 @@ bbcode {
     }
     & img {
         max-width: 100%;
+        &.thumb {
+            max-width: 40%;
+        }
+    }
+    .code {
+        width: 100%;
+        padding: 0.5em;
+        color: rgb(171, 178, 191);
+        background: rgb(40, 44, 52) none repeat scroll 0% 0%;
+        overflow: scroll;
+    }
+    & spoiler {
+        background: rgb(0, 0, 0) none repeat scroll 0% 0%;
+        color: rgb(0, 0, 0);
+        &:hover {
+            background: transparent none repeat scroll 0% 0%;
+        }
     }
 }
 
