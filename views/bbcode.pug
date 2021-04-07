@@ -5,6 +5,11 @@ case line.tag
                 include bbcode_tags.pug
     when "quote"
         blockquote
+            userinfo
+                    misc
+                        user #{line.attrs.username}
+                    postlink
+                        a(href="https://knockout.chat/thread/"+line.attrs.threadId+"/"+line.attrs.threadPage+"#post-"+line.attrs.postId) ##{line.attrs.postId}
             each parse in line.content
                 include bbcode_tags.pug
     default

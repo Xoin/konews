@@ -7,10 +7,16 @@ case parse.tag
         b #{parse.inner}
     when "u"
         u #{parse.inner}
-    when "li"
-        u #{parse.inner}
+    when "s"
+        s #{parse.inner}
     when "ul"
-        u #{parse.inner}
+        ul 
+            each bullet in parse.content
+                li #{bullet.content}
+    when "ol"
+        ol 
+            each bullet in parse.content
+                li #{bullet.content}
     when "img"
         if parse.attrs.thumbnail
             img(src=parse.inner, alt="",class="thumb")

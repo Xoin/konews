@@ -164,9 +164,40 @@ bbcode {
         background: rgb(228, 228, 228);
         border-radius: 0.6em;
         padding: 1em;
-        & userinfo{
-            & user{
-                font-weight: bold;
+        & userinfo {
+            display: table-row;
+            & avatar {
+                display: table-cell;
+                padding: 1em;
+                & img {
+                    width: 30px;
+                    height: 30px;
+                    border: 1px solid #e8eaea;
+                    background: url("data:image/gif;base64,R0lGODdhAwADAKECAODj4+Hj4////////ywAAAAAAwADAAACBIxuBwUAOw==");
+                }
+            }
+            & misc {
+                vertical-align: top;
+                padding: 1em;
+                display: table-cell;
+                width: 100%;
+                & user {
+                     display: block;
+                    font-weight: bold;
+                }
+                & time {
+                    color: #828585;
+                    display: block;
+                }
+            }
+            & postlink {
+                vertical-align: top;
+                display: table-cell;
+                text-align: end;
+                color: #b8b8b8;
+                a {
+                    color: #b8b8b8;
+                }
             }
         }
     }
