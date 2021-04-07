@@ -3,8 +3,13 @@ block content
     div(class="section")
         div(class="article")
             h1 #{thread.title}
-            div(class="by")
-            p Posted by #{thread.user.username} on #{thread.date.Hour}:#{thread.date.Minute} #{thread.date.DayFull} #{thread.date.Date} #{thread.date.MonthFull}
+            userinfo
+                avatar
+                    img(src="https://cdn.knockout.chat/image/"+thread.user.avatarUrl)
+                misc
+                    user #{thread.user.username}
+                    time #{thread.date.DayFull} #{thread.date.Date} #{thread.date.MonthFull} #{thread.date.Year}  #{thread.date.Hour}:#{thread.date.Minute} 
+            // Probably asking for XSS
             bbcode !{thread.posts[0].content}
         spacer
         h2 Comments (#{thread.postCount-1})
@@ -12,7 +17,11 @@ block content
             each post in thread.posts
                 if post.id != thread.posts[0].id
                     div(class="body")
-                        bbcode !{post.content}
                         userinfo
-                            user #{post.user.username}
-                            time #{post.createdAt}
+                                avatar
+                                    img(src="https://cdn.knockout.chat/image/"+post.user.avatarUrl)
+                                misc
+                                    user #{post.user.username}
+                                    time #{post.date.DayFull} #{post.date.Date} #{post.date.MonthFull} #{post.date.Year}  #{post.date.Hour}:#{post.date.Minute} 
+                        // Probably asking for XSS
+                        bbcode !{post.content}
