@@ -24,7 +24,7 @@ tags.h3 = (obj)=>{
 tags.img = (obj)=>{
     if (obj.attrs.thumbnail)
     {
-        return '<img class="thumb" src="'+obj.inner+'" />'
+        return '<a href="'+obj.inner+'"><img class="thumb" src="'+obj.inner+'" /></a>'
     }
     else{
     return '<img src="'+obj.inner+'" />'
