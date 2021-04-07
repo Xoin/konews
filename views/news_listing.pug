@@ -1,12 +1,13 @@
 news
-    each item in items
+    each group in items
         day
-            h2 #{item.date.DayFull} #{item.date.Date} #{item.date.MonthFull}
-            each item2 in item.objects
-                story
-                    div(class="icon")
-                        div(class="forum-"+item2.subforumId)
-                    div(class="time") #{item2.date.Hour}:#{item2.date.Minute}
-                    div(class="title")
-                        a(href="view/"+item2.id) #{item2.title}
-                    div(class="comments") #{item2.postCount-1}
+            h2 #{group.date.DayFull} #{group.date.Date} #{group.date.MonthFull}
+            storylist
+                each storyitem in group.objects
+                    story
+                        div(class="icon")
+                            div(class="forum-"+storyitem.subforumId)
+                        div(class="time") #{storyitem.date.Hour}:#{storyitem.date.Minute}
+                        div(class="title")
+                            a(href="view/"+storyitem.id) #{storyitem.title}
+                        div(class="comments") #{storyitem.postCount-1}
