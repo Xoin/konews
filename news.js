@@ -9,7 +9,7 @@ const rundate = CentralDate.Get()
 const loglevel = 5;
 // subforum ids
 //const subforums = [4];
-const subforums = [3, 4, 5, 6];
+const subforums = [1, 3, 4, 5, 6];
 const kourl = "https://api.knockout.chat/"
 
 function Logger(type,level,message) {
@@ -77,6 +77,7 @@ function FrontpageInterval() {
     subforum: []
   }
   subforums.forEach(element => {
+    Logger("FrontpageInterval",2,"Loading sub "+element)
     let response = fetch(`${kourl}subforum/${element}`);
     let targetssubforums = response.json()
     //if(storage.menusubforum[element]==undefined)
@@ -84,6 +85,7 @@ function FrontpageInterval() {
       //storage.menusubforum[element] = {id:element.id,subname:element.name}
     //}
     targetssubforums.threads.forEach(element => {
+      Logger("FrontpageInterval",3,"Scanning sub "+element.id)
       element.viewers = (element.viewers.memberCount + element.viewers.guestCount)
       let ThreadDate=CentralDate.Get(element.createdAt)
       element.date = ThreadDate

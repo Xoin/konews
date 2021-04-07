@@ -130,18 +130,23 @@ news {
                     vertical-align: middle;
                     border-bottom: 1px solid #e8eaea;
                     & .forum {
-                        &-3, &-4, &-5, &-6
-                        {
-                            width: 5px;
-                            height: 5px;
-                            margin-top: 2px;
-                            font-size: 0;
-                            &:hover {
-                                font-size: 0.9em;
-                                width: unset;
-                                height: unset;
-                                color: white;
+                        // probably not a good idea...
+                        each(range(10), {
+                            &-@{value} {
+                                width: 5px;
+                                height: 5px;
+                                margin-top: 2px;
+                                font-size: 0;
+                                &:hover {
+                                    font-size: 0.9em;
+                                    width: unset;
+                                    height: unset;
+                                    color: white;
+                                }
                             }
+                          });
+                        &-1 {
+                            background-color: #ffc6e5;
                         }
                         &-3 {
                             background-color: #26b913;
