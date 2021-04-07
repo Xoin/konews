@@ -63,6 +63,7 @@ function FetchThread(id) {
 
 // frontpage lister
 function FrontpageInterval() {
+  storage.subforum =[];
   let tempstorage = {
     subforum: []
   }
