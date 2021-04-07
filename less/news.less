@@ -18,13 +18,13 @@ body {
     padding: 2em;
 }
 
-.article {
+.userpanel {
     & userinfo {
         display: table-row;
         & avatar {
             display: table-cell;
             padding: 1em;
-            & img {
+            & img{
                 width: 30px;
                 height: 30px;
                 border: 1px solid #e8eaea;
@@ -57,6 +57,44 @@ body {
     }
 }
 
+// So we know these are all over the place...
+// target (source)
+
+// userinfo
+.article userinfo:extend(.userpanel userinfo) {};
+replys .body userinfo:extend(.userpanel userinfo) {};
+bbcode blockquote userinfo:extend(.userpanel userinfo) {};
+// Avatar
+.article userinfo avatar:extend(.userpanel userinfo avatar) {};
+.article userinfo avatar img:extend(.userpanel userinfo avatar img) {};
+
+replys .body userinfo avatar:extend(.userpanel userinfo avatar) {};
+replys .body userinfo avatar img:extend(.userpanel userinfo avatar img) {};
+
+bbcode blockquote userinfo avatar:extend(.userpanel userinfo avatar) {};
+bbcode blockquote blockquote userinfo avatar img:extend(.userpanel userinfo avatar img) {};
+// Meta (misc)
+.article userinfo misc:extend(.userpanel userinfo misc) {};
+replys .body userinfo misc:extend(.userpanel userinfo misc) {};
+bbcode blockquote userinfo misc:extend(.userpanel userinfo misc) {};
+// username
+.article userinfo misc user:extend(.userpanel userinfo misc user) {};
+replys .body userinfo misc user:extend(.userpanel userinfo misc user) {};
+bbcode blockquote userinfo misc user:extend(.userpanel userinfo misc user) {};
+// time
+.article userinfo misc time:extend(.userpanel userinfo misc time) {};
+replys .body userinfo misc time:extend(.userpanel userinfo misc time) {};
+bbcode blockquote userinfo misc time:extend(.userpanel userinfo misc time) {};
+// postlink
+.article userinfo postlink:extend(.userpanel userinfo postlink) {};
+.article userinfo postlink a:extend(.userpanel userinfo postlink a) {};
+
+replys .body userinfo postlink:extend(.userpanel userinfo postlink) {};
+replys .body userinfo postlink a:extend(.userpanel userinfo postlink a) {};
+
+bbcode blockquote userinfo postlink:extend(.userpanel userinfo postlink) {};
+bbcode blockquote userinfo postlink a:extend(.userpanel userinfo postlink a) {};
+
 & h1, & h2, & h1 a, & h2 a {
     color: @knockout-red;
 }
@@ -86,7 +124,6 @@ news {
                     color: #024368;
                     text-decoration: none;
                 }
-
                 & .icon {
                     display: table-cell;
                     padding: 5px;
@@ -164,42 +201,6 @@ bbcode {
         background: rgb(228, 228, 228);
         border-radius: 0.6em;
         padding: 1em;
-        & userinfo {
-            display: table-row;
-            & avatar {
-                display: table-cell;
-                padding: 1em;
-                & img {
-                    width: 30px;
-                    height: 30px;
-                    border: 1px solid #e8eaea;
-                    background: url("data:image/gif;base64,R0lGODdhAwADAKECAODj4+Hj4////////ywAAAAAAwADAAACBIxuBwUAOw==");
-                }
-            }
-            & misc {
-                vertical-align: top;
-                padding: 1em;
-                display: table-cell;
-                width: 100%;
-                & user {
-                     display: block;
-                    font-weight: bold;
-                }
-                & time {
-                    color: #828585;
-                    display: block;
-                }
-            }
-            & postlink {
-                vertical-align: top;
-                display: table-cell;
-                text-align: end;
-                color: #b8b8b8;
-                a {
-                    color: #b8b8b8;
-                }
-            }
-        }
     }
     br {
         line-height: 0.5;
@@ -227,7 +228,6 @@ bbcode {
     }
 }
 
-
 replys {
     width: 620px;
     .body {
@@ -237,42 +237,6 @@ replys {
         padding: 0.5em;
         font: normal 12px arial,helvetica,"Liberation Sans","DejaVu Sans Condensed",sans-serif;
         line-height: 1.6em;
-        & userinfo {
-            display: table-row;
-            & avatar {
-                display: table-cell;
-                padding: 1em;
-                & img {
-                    width: 30px;
-                    height: 30px;
-                    border: 1px solid #e8eaea;
-                    background: url("data:image/gif;base64,R0lGODdhAwADAKECAODj4+Hj4////////ywAAAAAAwADAAACBIxuBwUAOw==");
-                }
-            }
-            & misc {
-                vertical-align: top;
-                padding: 1em;
-                display: table-cell;
-                width: 100%;
-                & user {
-                     display: block;
-                    font-weight: bold;
-                }
-                & time {
-                    color: #828585;
-                    display: block;
-                }
-            }
-            & postlink {
-                vertical-align: top;
-                display: table-cell;
-                text-align: end;
-                color: #b8b8b8;
-                a {
-                    color: #b8b8b8;
-                }
-            }
-        }
     }
 }
 
