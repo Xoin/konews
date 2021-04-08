@@ -1,0 +1,23 @@
+
+{
+  "name": "konews",
+  "version": "0.0.1",
+  "description": "Knockout as a news site",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "main": "server.js",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "author": "xoin",
+  "license": "Unlicense",
+  "dependencies": {
+    "express": ">=4.17.1",
+    "express-less": ">=0.1.0",
+    "pug": ">=3.0.2",
+    "sync-fetch": ">=0.3.0"
+  }
+}
