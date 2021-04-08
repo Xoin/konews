@@ -194,9 +194,9 @@ news {
 
 highlights {
     display: table-row;
+    font: normal 0.9em arial,helvetica,"Liberation Sans","DejaVu Sans Condensed",sans-serif;
     & highlight {
         display: table-cell;
-        width: 4em;
         height: 2em;
         margin: 4em;
     }
@@ -270,6 +270,8 @@ replys {
     margin: auto;
     background: linear-gradient(rgb(51, 51, 51),rgb(39, 39, 39));
     padding: 0em 2em 0em 2em;
+    position: sticky;
+    top: 0;
     & .row {
         display: table-row;
         height: 3em;
@@ -296,7 +298,9 @@ replys {
 }
 
 spacer {
-    border-top: 1px solid #d7dfdd;
+    border-bottom: 1px solid #d7dfdd;
     padding-top: 0.9em;
+    padding-bottom: 0.9em;
+    margin-bottom: 1em;
     display: block;
 }

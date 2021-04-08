@@ -1,7 +1,7 @@
 extends news_main.pug
 block content
     div(class="section")
-        div(class="article" id="article")
+        div(class="article")
             forum
             h1 #{thread.title}
             userinfo
@@ -16,8 +16,8 @@ block content
             bbcode
                 each line in thread.posts[0].content
                     include bbcode.pug
-        spacer
-        h2(id="comments") Comments (#{thread.postCount-1})
+        spacer(id="comments")
+        h2 Comments (#{thread.postCount-1})
         replys
             each post in thread.posts
                 if post.id != thread.posts[0].id

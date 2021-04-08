@@ -73,6 +73,7 @@ function FetchThread(id) {
 function FrontpageInterval() {
   Logger("FrontpageInterval",1,"Request")
   storage.subforum =[];
+  storage.topitems =[];
   let tempstorage = {
     subforum: []
   }
@@ -101,6 +102,9 @@ function FrontpageInterval() {
           tempstorage.subforum[element.dateshort].objects.push(element)
         }
         //storage.subforum.push(element) // we really need to group by date
+      }
+      if (element.pinned && !element.locked){
+        storage.topitems.push(element)
       }
     });
   });
