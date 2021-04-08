@@ -9,5 +9,6 @@ news
                             div(class="forum-"+storyitem.subforumId) #{storyitem.subforumName}
                         div(class="time") #{storyitem.date.Hour}:#{storyitem.date.Minute}
                         div(class="title")
-                            a(href="view/"+storyitem.id) #{storyitem.title}
-                        div(class="comments") #{storyitem.postCount-1}
+                            a(href="view/"+storyitem.id+"#article") #{storyitem.title}
+                        div(class="comments")
+                            a(href="view/"+storyitem.id+"#comments") #{storyitem.postCount-1}
