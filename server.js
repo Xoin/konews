@@ -18,16 +18,14 @@ function Logger(type, level, message) {
 }
 
 const starargs = process.argv.slice(2);
-if(starargs[0] == "dev")
-{
+if (starargs[0] == "dev") {
   devmode = true
   loglevel = 5
 }
 else if (starargs[0]) {
   loglevel = starargs[0]
-  if (loglevel>0)
-  {
-    Logger('Start',0,'Console output will hurt preformance')
+  if (loglevel > 0) {
+    Logger('Start', 0, 'Console output will hurt preformance')
   }
 }
 else {
@@ -90,9 +88,9 @@ async function FetchThread(id) {
         storage.thread[id] = data
       }
       else {
-        storage.thread[id] = pug.renderFile("news_view", { thread: data, page: 'article', menu: storage.menusubforum })
+        storage.thread[id] = pug.renderFile("views/news_view.pug", { thread: data, page: 'article', menu: storage.menusubforum })
       }
-      
+
     }
   }
   return storage.thread[id]; // bad idea as it could not exist
@@ -149,9 +147,8 @@ async function FrontpageInterval() {
 
   // // sort threads
   storage.subforum.sort(CompareNumbers)
-  if(!devmode)
-  {
-    storage.frontpage = pug.renderFile("news_view", { thread: storage.subforum, page: 'article', menu: storage.menusubforum })
+  if (!devmode) {
+    storage.frontpage = pug.renderFile("views/news_index.pug", { items: storage.subforum, top: storage.topitems, page: 'home', menu: storage.menusubforum })
   }
   Logger("FrontpageInterval", 1, "frontpage refresh done")
 }
@@ -174,27 +171,25 @@ setInterval(ArticleInterval, articleintervaltime); // clear threadstore every 2 
 // App stuff
 app.use(express.static('public'))
 app.use('/static', express.static('public'))
-if (devmode)
-{
-    app.set('view engine', 'pug')
-    app.use('/less-css', expressLess(__dirname + '/less'));
+if (devmode) {
+  app.set('view engine', 'pug')
+  app.use('/less-css', expressLess(__dirname + '/less'));
 }
 else {
-    app.use('/less-css', expressLess(__dirname + '/less',{ cache: true, compress: true }));
-    app.use(compression())
+  app.use('/less-css', expressLess(__dirname + '/less', { cache: true, compress: true }));
+  app.use(compression())
 }
 
 // Get page stuff
 app.get('/', async (req, res) => {
   Logger("app/", 2, "Frontpage load")
-  if (devmode)
-  {
+  if (devmode) {
     res.render('news_index', { items: storage.subforum, top: storage.topitems, page: 'home', menu: storage.menusubforum })
   }
   else {
     res.send(storage.frontpage);
   }
-  
+
 })
 
 // reload the thread list
@@ -218,14 +213,13 @@ app.get('/view/:id', async (req, res) => {
   //if (storage.threadidvalid.includes(req.params.id))
   //{
   let thread = await FetchThread(req.params.id);
-  if (devmode)
-  {
+  if (devmode) {
     res.render("news_view", { thread: thread, page: 'article', menu: storage.menusubforum })
   }
   else {
     res.send(thread);
   }
-  
+
   //}
   //else {
   //  res.redirect('/');
