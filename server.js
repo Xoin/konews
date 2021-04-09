@@ -1,15 +1,15 @@
-const e = require('express');
 const express = require('express')
 const expressLess = require('express-less');
-const fetch = require('sync-fetch');
+const fetch = require('node-fetch');
+const compression = require('compression')
 const app = express()
 const port = 8855
 const bbcode = require('./bbcode');
 const CentralDate = require('./CentralDate');
 const rundate = CentralDate.Get()
-let loglevel =0
+let loglevel = 0
 const starargs = process.argv.slice(2);
-if(starargs[0]){
+if (starargs[0]) {
   loglevel = starargs[0]
 }
 else {
@@ -22,9 +22,9 @@ else {
 const subforums = [1, 3, 4, 5, 6];
 const kourl = "https://api.knockout.chat/"
 
-function Logger(type,level,message) {
+function Logger(type, level, message) {
   if (level <= loglevel) {
-    console.log(type+"."+level+": "+message)
+    console.log(type + "." + level + ": " + message)
   }
 }
 
@@ -53,14 +53,14 @@ function CompareNumbers(a, b) {
 }
 
 // forum thread loader and storer
-function FetchThread(id) {
-  Logger("FetchThread",2,`Request ${id}`)
+async function FetchThread(id) {
+  Logger("FetchThread", 2, `Request ${id}`)
   if (storage.threadid.includes(id)) {
-    Logger("FetchThread",3,`Loaded ${id}`)
+    Logger("FetchThread", 3, `Loaded ${id}`)
   }
   else {
-    let response = fetch(`${kourl}thread/${id}`);
-    let data = response.json()
+    let response = await fetch(`${kourl}thread/${id}`);
+    let data = await response.json()
     if (data.message || data.totalPosts == 0) {
       return false;
     }
@@ -71,7 +71,7 @@ function FetchThread(id) {
         data.posts[index].content = bbcode.render(data.posts[index].content)
         data.posts[index].date = CentralDate.Get(data.posts[index].createdAt)
       }
-      Logger("FetchThread",3,`Saved ${id}`)
+      Logger("FetchThread", 3, `Saved ${id}`)
       storage.threadid.push(id)
       storage.thread[id] = data
     }
@@ -80,44 +80,48 @@ function FetchThread(id) {
 }
 
 // frontpage lister
-function FrontpageInterval() {
-  Logger("FrontpageInterval",2,"Request")
-  storage.subforum =[];
-  storage.topitems =[];
+
+async function FrontpageInterval() {
+  Logger("FrontpageInterval", 2, "Request")
+  storage.subforum = [];
+  storage.topitems = [];
   let tempstorage = {
     subforum: []
   }
-  subforums.forEach(element => {
-    Logger("FrontpageInterval",2,"Loading sub "+element)
-    let response = fetch(`${kourl}subforum/${element}`);
-    let targetssubforums = response.json()
+
+  for (let index = 0; index < subforums.length; index++) {
+    const element = subforums[index];
+    Logger("FrontpageInterval", 2, "Loading sub " + element)
+    let response = await fetch(`${kourl}subforum/${element}`);
+    let targetssubforums = await response.json()
     //if(storage.menusubforum[element]==undefined)
     //{
-      //storage.menusubforum[element] = {id:element.id,subname:element.name}
+    //storage.menusubforum[element] = {id:element.id,subname:element.name}
     //}
-    targetssubforums.threads.forEach(element => {
-      Logger("FrontpageInterval",3,"Scanning sub "+element.id)
-      element.viewers = (element.viewers.memberCount + element.viewers.guestCount)
-      let ThreadDate=CentralDate.Get(element.createdAt)
-      element.date = ThreadDate
-      element.dateshort = ThreadDate.Date+"-"+ThreadDate.Month+"-"+ThreadDate.Year
-      element.subforumName=targetssubforums.name
-      if (!element.pinned && !element.locked && element.date.Year==rundate.Year&&element.date.Month >= (rundate.Month-2)) {
+    for (let xindex = 0; xindex < targetssubforums.threads.length; xindex++) {
+      const xelement = targetssubforums.threads[xindex];
+      Logger("FrontpageInterval", 3, "Scanning sub " + xelement.id)
+      xelement.viewers = (xelement.viewers.memberCount + xelement.viewers.guestCount)
+      let ThreadDate = CentralDate.Get(xelement.createdAt)
+      xelement.date = ThreadDate
+      xelement.dateshort = ThreadDate.Date + "-" + ThreadDate.Month + "-" + ThreadDate.Year
+      xelement.subforumName = targetssubforums.name
+      if (!xelement.pinned && !xelement.locked && xelement.date.Year == rundate.Year && xelement.date.Month >= (rundate.Month - 2)) {
         //storage.threadidvalid.push(element.id)
-        if (tempstorage.subforum[element.dateshort]==undefined){
-          tempstorage.subforum[element.dateshort] = {id:ThreadDate.Time,objects:[],date:ThreadDate}
-          tempstorage.subforum[element.dateshort].objects.push(element)
+        if (tempstorage.subforum[xelement.dateshort] == undefined) {
+          tempstorage.subforum[xelement.dateshort] = { id: ThreadDate.Time, objects: [], date: ThreadDate }
+          tempstorage.subforum[xelement.dateshort].objects.push(xelement)
         }
         else {
-          tempstorage.subforum[element.dateshort].objects.push(element)
+          tempstorage.subforum[xelement.dateshort].objects.push(xelement)
         }
         //storage.subforum.push(element) // we really need to group by date
       }
-      if (element.pinned && !element.locked){
-        storage.topitems.push(element)
+      if (xelement.pinned && !xelement.locked) {
+        storage.topitems.push(xelement)
       }
-    });
-  });
+    }
+  }
 
   for (var key in tempstorage.subforum) {
     tempstorage.subforum[key].objects.sort(CompareNumbers)
@@ -127,19 +131,19 @@ function FrontpageInterval() {
   // // sort threads
   storage.subforum.sort(CompareNumbers)
 
-  Logger("FrontpageInterval",1,"frontpage refresh done")
+  Logger("FrontpageInterval", 1, "frontpage refresh done")
 }
 
 // purges articles
 function ArticleInterval() {
   storage.threadstore = [];
   storage.threadid = [];
-  Logger("ArticleInterval",1,"article purge done")
+  Logger("ArticleInterval", 1, "article purge done")
 }
 
 // setup
-Logger("Start",0,"Starting can be slow")
-FrontpageInterval()
+Logger("Start", 0, "Starting can be slow")
+FrontpageInterval();
 
 // refresh frontpage
 setInterval(FrontpageInterval, frontpageintervaltime); // Refresh frontpage every 15 minutes
@@ -150,35 +154,36 @@ app.set('view engine', 'pug')
 app.use(express.static('public'))
 app.use('/static', express.static('public'))
 app.use('/less-css', expressLess(__dirname + '/less'));
+app.use(compression())
 
 // Get page stuff
-app.get('/', (req, res) => {
-  Logger("app/",2,"Frontpage load")
+app.get('/', async (req, res) => {
+  Logger("app/", 2, "Frontpage load")
   res.render('news_index', { items: storage.subforum, top: storage.topitems, page: 'home', menu: storage.menusubforum })
 })
 
 // reload the thread list
-app.get('/refresh', (req, res) => {
-  Logger("app/refresh",1,"forcing refresh")
+app.get('/refresh', async (req, res) => {
+  Logger("app/refresh", 1, "forcing refresh")
   FrontpageInterval()
   res.redirect('/')
 })
 
 // sort it by hand
-app.get('/resort', (req, res) => {
-  Logger("app/resort",1,"forcing sorting")
+app.get('/resort', async (req, res) => {
+  Logger("app/resort", 1, "forcing sorting")
   storage.subforum.sort(CompareNumbers) // Broken?
   res.redirect('/')
 })
 
-app.get('/view/:id', (req, res) => {
-  Logger("/view/:id",2,'reqeust for ' + req.params.id)
+app.get('/view/:id', async (req, res) => {
+  Logger("/view/:id", 2, 'reqeust for ' + req.params.id)
   //console.log(storage.menusubforum)
   //console.log(storage.threadidvalid)
   //if (storage.threadidvalid.includes(req.params.id))
   //{
-    let thread = FetchThread(req.params.id);
-    res.render("news_view", { thread: thread, page: 'article', menu: storage.menusubforum })
+  let thread = await FetchThread(req.params.id);
+  res.render("news_view", { thread: thread, page: 'article', menu: storage.menusubforum })
   //}
   //else {
   //  res.redirect('/');
@@ -186,6 +191,6 @@ app.get('/view/:id', (req, res) => {
 })
 
 // Boring listen
-app.listen(port, () => {
-  Logger("Start",0,`app listening at http://localhost:${port}`)
+app.listen(port, async () => {
+  Logger("Start", 0, `app listening at http://localhost:${port}`)
 })

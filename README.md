@@ -1,5 +1,5 @@
 # konews
 
-Simple knockout.chat client. Clean html, clean css, garbage js
+Simple knockout.chat client. Clean css, cleanish html, garbage js
 
-express, express-less, sync-fetch, pug
+express, express-less, node-fetch, compression, pug
