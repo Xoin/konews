@@ -102,6 +102,7 @@ async function FrontpageInterval() {
   Logger("FrontpageInterval", 2, "Request")
   storage.subforum = [];
   storage.topitems = [];
+  storage.threadidvalid = [];
   let tempstorage = {
     subforum: []
   }
@@ -124,7 +125,7 @@ async function FrontpageInterval() {
       xelement.dateshort = ThreadDate.Date + "-" + ThreadDate.Month + "-" + ThreadDate.Year
       xelement.subforumName = targetssubforums.name
       if (!xelement.pinned && !xelement.locked && xelement.date.Year == rundate.Year && xelement.date.Month >= (rundate.Month - 2)) {
-        //storage.threadidvalid.push(element.id)
+        storage.threadidvalid.push(xelement.id.toString())
         if (tempstorage.subforum[xelement.dateshort] == undefined) {
           tempstorage.subforum[xelement.dateshort] = { id: ThreadDate.Time, objects: [], date: ThreadDate }
           tempstorage.subforum[xelement.dateshort].objects.push(xelement)
@@ -132,7 +133,6 @@ async function FrontpageInterval() {
         else {
           tempstorage.subforum[xelement.dateshort].objects.push(xelement)
         }
-        //storage.subforum.push(element) // we really need to group by date
       }
       if (xelement.pinned && !xelement.locked) {
         storage.topitems.push(xelement)
@@ -144,7 +144,6 @@ async function FrontpageInterval() {
     tempstorage.subforum[key].objects.sort(CompareNumbers)
     storage.subforum.push(tempstorage.subforum[key])
   }
-
   // // sort threads
   storage.subforum.sort(CompareNumbers)
   if (!devmode) {
@@ -208,22 +207,19 @@ app.get('/resort', async (req, res) => {
 
 app.get('/view/:id', async (req, res) => {
   Logger("/view/:id", 2, 'reqeust for ' + req.params.id)
-  //console.log(storage.menusubforum)
-  //console.log(storage.threadidvalid)
-  //if (storage.threadidvalid.includes(req.params.id))
-  //{
-  let thread = await FetchThread(req.params.id);
-  if (devmode) {
-    res.render("news_view", { thread: thread, page: 'article', menu: storage.menusubforum })
+  if (storage.threadidvalid.includes(req.params.id)||devmode) {
+    let thread = await FetchThread(req.params.id);
+    if (devmode) {
+      res.render("news_view", { thread: thread, page: 'article', menu: storage.menusubforum })
+    }
+    else {
+      res.send(thread);
+    }
+
   }
   else {
-    res.send(thread);
+    res.redirect('/');
   }
-
-  //}
-  //else {
-  //  res.redirect('/');
-  //}
 })
 
 // Boring listen
