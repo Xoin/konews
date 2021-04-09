@@ -9,6 +9,10 @@ case parse.tag
         u #{parse.inner}
     when "s"
         s #{parse.inner}
+    when "h1"
+        h1 #{parse.inner}
+    when "h2"
+        h2 #{parse.inner}
     when "ul"
         ul 
             each bullet in parse.content
@@ -25,7 +29,9 @@ case parse.tag
     when "spoiler"
         spoiler #{parse.content}
     when "url"
-        if parse.inner
+        if !parse.attrs.href
+            a(href=parse.inner) #{parse.inner}
+        else if parse.inner
             a(href=parse.attrs.href) #{parse.inner}
         else
             a(href=parse.attrs.href)  #{parse.attrs.href}
