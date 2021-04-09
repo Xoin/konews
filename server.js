@@ -10,15 +10,25 @@ const CentralDate = require('./CentralDate');
 const rundate = CentralDate.Get()
 let loglevel = 0
 let devmode = false
-const starargs = process.argv.slice(2);
 
+function Logger(type, level, message) {
+  if (level <= loglevel) {
+    console.log(type + "." + level + ": " + message)
+  }
+}
+
+const starargs = process.argv.slice(2);
 if(starargs[0] == "dev")
 {
   devmode = true
-  loglevel = starargs[1]
+  loglevel = 5
 }
 else if (starargs[0]) {
   loglevel = starargs[0]
+  if (loglevel>0)
+  {
+    Logger('Start',0,'Console output will hurt preformance')
+  }
 }
 else {
   loglevel = 0
@@ -29,12 +39,6 @@ else {
 //const subforums = [4];
 const subforums = [1, 3, 4, 5, 6];
 const kourl = "https://api.knockout.chat/"
-
-function Logger(type, level, message) {
-  if (level <= loglevel) {
-    console.log(type + "." + level + ": " + message)
-  }
-}
 
 // Main storage
 let storage = {
@@ -168,15 +172,17 @@ setInterval(FrontpageInterval, frontpageintervaltime); // Refresh frontpage ever
 setInterval(ArticleInterval, articleintervaltime); // clear threadstore every 2 hours, we really do not care about comments
 
 // App stuff
-if (devmode)
-{
-  app.set('view engine', 'pug')
-}
-
 app.use(express.static('public'))
 app.use('/static', express.static('public'))
-app.use('/less-css', expressLess(__dirname + '/less'));
-app.use(compression())
+if (devmode)
+{
+    app.set('view engine', 'pug')
+    app.use('/less-css', expressLess(__dirname + '/less'));
+}
+else {
+    app.use('/less-css', expressLess(__dirname + '/less',{ cache: true, compress: true }));
+    app.use(compression())
+}
 
 // Get page stuff
 app.get('/', async (req, res) => {
@@ -214,7 +220,7 @@ app.get('/view/:id', async (req, res) => {
   let thread = await FetchThread(req.params.id);
   if (devmode)
   {
-    res.render("news_view", { thread: data, page: 'article', menu: storage.menusubforum })
+    res.render("news_view", { thread: thread, page: 'article', menu: storage.menusubforum })
   }
   else {
     res.send(thread);
