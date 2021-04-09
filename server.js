@@ -8,7 +8,7 @@ const port = 8855
 const bbcode = require('./bbcode');
 const CentralDate = require('./CentralDate');
 const rundate = CentralDate.Get()
-let loglevel = 0
+let loglevel = 2
 let devmode = false
 
 function Logger(type, level, message) {
@@ -43,6 +43,7 @@ let storage = {
   subforum: [], // Complete firstpages of subforums
   menusubforum: [], // Menu links to subforums
   thread: [], // thread/article we keep in memory for faster loading
+  threadrender: [], // renderd thread
   threadid: [], // thread numbers
   threadidvalid: [], // storage of ids that can be viewed so it doesn't become a generic proxy
   topitems: [], // threads with many viewers
@@ -66,34 +67,36 @@ function CompareNumbers(a, b) {
 // forum thread loader and storer
 async function FetchThread(id) {
   Logger("FetchThread", 2, `Request ${id}`)
-  if (storage.threadid.includes(id)) {
-    Logger("FetchThread", 3, `Loaded ${id}`)
+
+  let response = await fetch(`${kourl}thread/${id}`);
+  let data = await response.json()
+  
+  if (data.message || data.totalPosts == 0) {
+    return false;
   }
   else {
-    let response = await fetch(`${kourl}thread/${id}`);
-    let data = await response.json()
-    if (data.message || data.totalPosts == 0) {
-      return false;
-    }
-    else {
-      // convert bbcode, could just foreach
+    // convert bbcode, could just foreach
+    if (!storage.threadid.includes(id)||(storage.thread[id].postCount < data.postCount&&storage.thread[id].postCount < 19)) {
       data.date = CentralDate.Get(data.createdAt)
       for (let index = 0; index < data.posts.length; index++) {
         data.posts[index].content = bbcode.render(data.posts[index].content)
         data.posts[index].date = CentralDate.Get(data.posts[index].createdAt)
       }
       Logger("FetchThread", 3, `Saved ${id}`)
-      storage.threadid.push(id)
+      storage.threadid.push(id.toString())
       if (devmode) {
         storage.thread[id] = data
       }
       else {
-        storage.thread[id] = pug.renderFile("views/news_view.pug", { thread: data, page: 'article', menu: storage.menusubforum })
+        storage.thread[id] = data
+        storage.threadrender[id] = pug.renderFile("views/news_view.pug", { thread: data, page: 'article', menu: storage.menusubforum })
       }
-
+    }
+    else {
+      Logger("FetchThread", 3, `Loaded ${id}`)
     }
   }
-  return storage.thread[id]; // bad idea as it could not exist
+  return storage.thread[id];
 }
 
 // frontpage lister
@@ -146,6 +149,10 @@ async function FrontpageInterval() {
   }
   // // sort threads
   storage.subforum.sort(CompareNumbers)
+  for (let index = 0; index < storage.subforum[0].objects.length; index++) {
+      await FetchThread(storage.subforum[0].objects[index].id)
+  }
+
   if (!devmode) {
     storage.frontpage = pug.renderFile("views/news_index.pug", { items: storage.subforum, top: storage.topitems, page: 'home', menu: storage.menusubforum })
   }
@@ -165,7 +172,7 @@ FrontpageInterval();
 
 // refresh frontpage
 setInterval(FrontpageInterval, frontpageintervaltime); // Refresh frontpage every 15 minutes
-setInterval(ArticleInterval, articleintervaltime); // clear threadstore every 2 hours, we really do not care about comments
+//setInterval(ArticleInterval, articleintervaltime); // clear threadstore every 2 hours, we really do not care about comments
 
 // App stuff
 app.use(express.static('public'))
@@ -207,13 +214,17 @@ app.get('/resort', async (req, res) => {
 
 app.get('/view/:id', async (req, res) => {
   Logger("/view/:id", 2, 'reqeust for ' + req.params.id)
-  if (storage.threadidvalid.includes(req.params.id)||devmode) {
-    let thread = await FetchThread(req.params.id);
+  if (storage.threadidvalid.includes(req.params.id) || devmode) {
+    let thread;
+    if (!storage.threadid.includes(req.params.id))
+    {
+      thread = await FetchThread(req.params.id);
+    }
     if (devmode) {
       res.render("news_view", { thread: thread, page: 'article', menu: storage.menusubforum })
     }
     else {
-      res.send(thread);
+      res.send(storage.threadrender[req.params.id]);
     }
 
   }
