@@ -1,3 +1,4 @@
+const e = require('express');
 const express = require('express')
 const expressLess = require('express-less');
 const fetch = require('sync-fetch');
@@ -6,7 +7,16 @@ const port = 8855
 const bbcode = require('./bbcode');
 const CentralDate = require('./CentralDate');
 const rundate = CentralDate.Get()
-const loglevel = 5;
+let loglevel =0
+const starargs = process.argv.slice(2);
+if(starargs[0]){
+  loglevel = starargs[0]
+}
+else {
+  loglevel = 0
+}
+
+
 // subforum ids
 //const subforums = [4];
 const subforums = [1, 3, 4, 5, 6];
@@ -31,7 +41,7 @@ let storage = {
 // How long is our memory
 const frontpageintervaltime = 900000;
 // const frontpageintervaltime = 90000000000000000000000000000000; // debug is fun!
-const articleintervaltime = 300000;
+const articleintervaltime = 7200000;
 // const articleintervaltime = 30000000000000000000000000000000; // debug is fun!
 const maxtopitems = 6
 
@@ -44,9 +54,9 @@ function CompareNumbers(a, b) {
 
 // forum thread loader and storer
 function FetchThread(id) {
-  Logger("FetchThread",1,`Request ${id}`)
+  Logger("FetchThread",2,`Request ${id}`)
   if (storage.threadid.includes(id)) {
-    Logger("FetchThread",2,`Loaded ${id}`)
+    Logger("FetchThread",3,`Loaded ${id}`)
   }
   else {
     let response = fetch(`${kourl}thread/${id}`);
@@ -61,7 +71,7 @@ function FetchThread(id) {
         data.posts[index].content = bbcode.render(data.posts[index].content)
         data.posts[index].date = CentralDate.Get(data.posts[index].createdAt)
       }
-      Logger("FetchThread",2,`Saved ${id}`)
+      Logger("FetchThread",3,`Saved ${id}`)
       storage.threadid.push(id)
       storage.thread[id] = data
     }
@@ -71,7 +81,7 @@ function FetchThread(id) {
 
 // frontpage lister
 function FrontpageInterval() {
-  Logger("FrontpageInterval",1,"Request")
+  Logger("FrontpageInterval",2,"Request")
   storage.subforum =[];
   storage.topitems =[];
   let tempstorage = {
@@ -124,7 +134,7 @@ function FrontpageInterval() {
 function ArticleInterval() {
   storage.threadstore = [];
   storage.threadid = [];
-  Logger("Interval",1,"article purge done")
+  Logger("ArticleInterval",1,"article purge done")
 }
 
 // setup
@@ -133,7 +143,7 @@ FrontpageInterval()
 
 // refresh frontpage
 setInterval(FrontpageInterval, frontpageintervaltime); // Refresh frontpage every 15 minutes
-setInterval(ArticleInterval, articleintervaltime); // clear threadstore every 5 minutes, edit less and pug without hammerin the server
+setInterval(ArticleInterval, articleintervaltime); // clear threadstore every 2 hours, we really do not care about comments
 
 // App stuff
 app.set('view engine', 'pug')

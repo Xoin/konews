@@ -4,7 +4,8 @@
   "description": "Knockout as a news site",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "echo \"Error: no test specified\" && exit 1",
+    "debug": "node server.js 5",
+    "info": "node server.js 1",
     "start": "node server.js"
   },
   "main": "server.js",
