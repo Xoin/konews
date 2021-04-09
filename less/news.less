@@ -117,7 +117,7 @@ news {
             & story {
                 display: table-row;
                 width: 36px;
-                font: normal 0.9em arial,helvetica,"Liberation Sans","DejaVu Sans Condensed",sans-serif;
+                font: normal 1em arial,helvetica,"Liberation Sans","DejaVu Sans Condensed",sans-serif;
                 & a:hover, a.highlightlink {
                     text-decoration: underline;
                     color: #b9133c;
@@ -248,7 +248,7 @@ replys {
         overflow: hidden;
         margin: 1em;
         padding: 0.5em;
-        font: normal 12px arial,helvetica,"Liberation Sans","DejaVu Sans Condensed",sans-serif;
+        font: normal 1em arial,helvetica,"Liberation Sans","DejaVu Sans Condensed",sans-serif;
         line-height: 1.6em;
     }
 }
@@ -309,3 +309,49 @@ spacer {
     margin-bottom: 1em;
     display: block;
 }
+
+@media (orientation: portrait) {
+    .header,.content {
+        border-radius: 0em;
+        padding: 0.2em;
+    }
+    body {
+        margin: 0em;
+        
+    }
+    bbcode {
+        font-size: unset;
+        line-height: unset;
+
+        & blockquote {
+            padding: 1em;
+            margin: 0.5em 0.1em 0.5em 0.1em;
+        }
+    }
+    h1 {
+        font-size: 4em;
+        text-align: center;
+        line-height: 0.9;
+    }
+    h2 {
+        font-size: 3em;
+        text-align: center;
+        line-height: 0.9;
+    }
+    news {
+        & day {
+            & storylist {
+                border-top: 0.2em solid #e8eaea;
+                & story {
+                    & .icon, & .comments {
+                        display: none;
+                        border-bottom: 1em solid #e8eaea;
+                    }
+                    & .time, & .title {
+                        border-bottom: 0.2em solid #e8eaea;
+                    }
+                }
+            }
+        }
+    }
+  }
