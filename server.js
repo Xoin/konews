@@ -8,7 +8,7 @@ const port = 8855
 const bbcode = require('./bbcode');
 const CentralDate = require('./CentralDate');
 const rundate = CentralDate.Get()
-let loglevel = 2
+let loglevel = 0
 let devmode = false
 
 function Logger(type, level, message) {
