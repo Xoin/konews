@@ -1,6 +1,9 @@
 html
     head
-        title Knockout News Network
+        if page == "article"
+            title KNN - #{thread.title}
+        else
+            title Knockout News Network
         link(rel="stylesheet", href="/less-css/news.css")
         meta(name="viewport", content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=1;")
     body
