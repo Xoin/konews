@@ -76,7 +76,7 @@ async function FetchThread(id) {
   }
   else {
     // convert bbcode, could just foreach
-    if (!storage.threadid.includes(id)||(storage.thread[id].postCount < data.postCount&&storage.thread[id].postCount < 19)) {
+    if (!storage.threadid.includes(id)) {
       data.date = CentralDate.Get(data.createdAt)
       for (let index = 0; index < data.posts.length; index++) {
         data.posts[index].content = bbcode.render(data.posts[index].content)
@@ -150,7 +150,12 @@ async function FrontpageInterval() {
   // // sort threads
   storage.subforum.sort(CompareNumbers)
   for (let index = 0; index < storage.subforum[0].objects.length; index++) {
+    let storedid= storage.subforum[0].objects[index].id
+    let storedidt= storage.subforum[0].objects[index].id.toString()
+    if (storedid==undefined||!storage.threadid.includes(storedidt)||(storage.subforum[0].objects[index].postCount!=storage.thread[storedid].postCount&&storage.subforum[0].objects[index].postCount < 19)){
       await FetchThread(storage.subforum[0].objects[index].id)
+  }
+
   }
 
   if (!devmode) {
@@ -216,8 +221,7 @@ app.get('/view/:id', async (req, res) => {
   Logger("/view/:id", 2, 'reqeust for ' + req.params.id)
   if (storage.threadidvalid.includes(req.params.id) || devmode) {
     let thread;
-    if (!storage.threadid.includes(req.params.id))
-    {
+    if (!storage.threadid.includes(req.params.id)) {
       thread = await FetchThread(req.params.id);
     }
     if (devmode) {

@@ -6,7 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "debug": "node server.js 5",
     "info": "node server.js 1",
-    "dev": "node server.js dev",
+    "dev": "node --trace-warnings server.js dev",
     "start": "node server.js"
   },
   "main": "server.js",
