@@ -354,4 +354,19 @@ spacer {
             }
         }
     }
-  }
+    .menu {
+        & .row {
+            & .menuitem {
+                & a {
+                    display: none;
+                }
+                &:nth-child(1) a {
+                    display: block;
+                }
+                &.active a {
+                    display: block;
+                }
+            }
+        }
+    }
+}

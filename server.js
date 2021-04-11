@@ -35,13 +35,19 @@ else {
 
 
 // subforum ids
-const subforums = [1, 3, 4, 5, 6]; // add subforum names, pass to render
+const subforums = [
+  {id:1, name:"General Discussion"},
+  {id:3, name:"Gaming"},
+  {id:4, name:"Videos"},
+  {id:5, name:"Politics"},
+  {id:6, name:"News"}
+];
 const kourl = "https://api.knockout.chat/"
 
 // Main storage
 let storage = {
   subforum: [], // Complete firstpages of subforums
-  menusubforum: [], // Menu links to subforums
+  menusubforum: subforums, // Menu links to subforums
   thread: [], // thread/article we keep in memory for faster loading
   threadrender: [], // renderd thread
   threadid: [], // thread numbers
@@ -126,7 +132,7 @@ async function FrontpageInterval() {
   // Loop all the subforums we want
   for (let index = 0; index < subforums.length; index++) {
     // Pretend this is a for each
-    const element = subforums[index];
+    const element = subforums[index].id;
     Logger("FrontpageInterval", 2, "Loading sub " + element)
 
     // Fecth the thread. more ideal would using .then. Skipped for now because async issues
@@ -251,6 +257,15 @@ app.get('/', async (req, res) => {
     res.send(storage.frontpage);
   }
 
+})
+
+app.get('/subforum/:id', async (req, res) => {
+  if (devmode) {
+    res.render('news_index', { items: storage.subforum, top: storage.topitems, page: 'subforum', subforumid: req.params.id, menu: storage.menusubforum })
+  }
+  else {
+    res.send(storage.frontpage);
+  }
 })
 
 // Articles

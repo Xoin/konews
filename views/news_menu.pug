@@ -1,10 +1,20 @@
+mixin button(item,url,currentpage,active)
+    if currentpage == page && active
+        div(class="menuitem active")
+            a(href=url) #{item.name}
+    else
+        div(class="menuitem")
+            a(href=url) #{item.name}
+
+
 div(class="menu" id="article")
     div(class="row")
-        if page == "home"
-            div(class="menuitem active")
-                a(href="/") Home
-        else
-            div(class="menuitem")
-                a(href="/") Home
-        div(class="menuitem")
-            a(href="/") News
+        -var myhome = {id:0,name:"Home"}
+        +button(myhome,"/","home",true)
+        each menuitem in menu
+            if page=="article" && thread.subforumId == menuitem.id
+                +button(menuitem,"/subforum/"+menuitem.id,"article",true)
+            else if page=="subforum" && subforumid == menuitem.id
+                +button(menuitem,"/subforum/"+menuitem.id,"subforum",true)
+            else
+                +button(menuitem,"/subforum/"+menuitem.id,page,false)
