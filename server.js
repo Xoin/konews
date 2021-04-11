@@ -36,11 +36,11 @@ else {
 
 // subforum ids
 const subforums = [
-  {id:1, name:"General Discussion"},
-  {id:3, name:"Gaming"},
-  {id:4, name:"Videos"},
-  {id:5, name:"Politics"},
-  {id:6, name:"News"}
+  { id: 1, name: "General Discussion" },
+  { id: 3, name: "Gaming" },
+  { id: 4, name: "Videos" },
+  { id: 5, name: "Politics" },
+  { id: 6, name: "News" }
 ];
 const kourl = "https://api.knockout.chat/"
 
@@ -53,7 +53,8 @@ let storage = {
   threadid: [], // thread numbers
   threadidvalid: [], // storage of ids that can be viewed so it doesn't become a generic proxy
   topitems: [], // threads with many viewers
-  frontpage: "" // prerender frontpage
+  frontpage: "", // prerender frontpage
+  subforumrender: []
 }
 
 // How long is our memory
@@ -77,7 +78,7 @@ async function FetchThread(id) {
   // Fecth the thread. more ideal would using .then
   let response = await fetch(`${kourl}thread/${id}`);
   let data = await response.json()
-  
+
   // Probably broken has data check
   if (data.message || data.totalPosts == 0) {
     return false;
@@ -194,12 +195,16 @@ async function FrontpageInterval() {
     // Prerender if it does not exist or has new comments but not beyond the first page
     if (storedid == undefined || !storage.threadid.includes(storedidt) || (storage.subforum[0].objects[index].postCount != storage.thread[storedid].postCount && storage.subforum[0].objects[index].postCount < 19)) {
       await FetchThread(storage.subforum[0].objects[index].id)
+    }
   }
 
+  for (let index = 0; index < subforums.length; index++) {
+    const element = subforums[index];
+    storage.subforumrender[element.id] = pug.renderFile('views/news_subforum.pug', { subforumitems: JSON.parse(JSON.stringify(storage.subforum)), top: storage.topitems, page: 'subforum', subforumid: element.id, menu: storage.menusubforum })
   }
   // In production we prerender the entire page
   if (!devmode) {
-    storage.frontpage = pug.renderFile("views/news_index.pug", { items: storage.subforum, top: storage.topitems, page: 'home', menu: storage.menusubforum })
+    storage.frontpage = pug.renderFile("views/news_index.pug", { subforumitems: storage.subforum, top: storage.topitems, page: 'home', menu: storage.menusubforum })
   }
   Logger("FrontpageInterval", 1, "frontpage refresh done")
 }
@@ -251,7 +256,7 @@ app.get('/', async (req, res) => {
   Logger("app/", 2, "Frontpage load")
   // Rerender in devmode, else static
   if (devmode) {
-    res.render('news_index', { items: storage.subforum, top: storage.topitems, page: 'home', menu: storage.menusubforum })
+    res.render('news_index', { subforumitems: JSON.parse(JSON.stringify(storage.subforum)), top: storage.topitems, page: 'home', menu: storage.menusubforum })
   }
   else {
     res.send(storage.frontpage);
@@ -261,10 +266,10 @@ app.get('/', async (req, res) => {
 
 app.get('/subforum/:id', async (req, res) => {
   if (devmode) {
-    res.render('news_index', { items: storage.subforum, top: storage.topitems, page: 'subforum', subforumid: req.params.id, menu: storage.menusubforum })
+    res.render('news_subforum', { subforumitems: JSON.parse(JSON.stringify(storage.subforum)), top: storage.topitems, page: 'subforum', subforumid: parseInt(req.params.id), menu: storage.menusubforum })
   }
   else {
-    res.send(storage.frontpage);
+    res.send(storage.subforumrender[req.params.id]);
   }
 })
 
@@ -275,11 +280,11 @@ app.get('/view/:id', async (req, res) => {
   if (storage.threadidvalid.includes(req.params.id) || devmode) {
     // Rerender in devmode, else static
     if (devmode) {
-    let thread;
+      let thread;
       // Load the thread if not stored while in devmode
-    if (!storage.threadid.includes(req.params.id)) {
-      thread = await FetchThread(req.params.id);
-    }
+      if (!storage.threadid.includes(req.params.id)) {
+        thread = await FetchThread(req.params.id);
+      }
       res.render("news_view", { thread: storage.thread[req.params.id], page: 'article', menu: storage.menusubforum })
     }
     else {

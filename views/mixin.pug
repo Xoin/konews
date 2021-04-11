@@ -1,0 +1,18 @@
+mixin story(storydata)
+    story
+        div(class="icon")
+            div(class="forum-"+storydata.subforumId) #{storydata.subforumName}
+        //div(class="time") #{item.createdAt.TimeString}
+        div(class="title")
+            a(href="/view/"+storydata.id+"#article") #{storydata.title}
+        div(class="comments")
+            a(href="/view/"+storydata.id+"#comments") #{storydata.postCount-1}
+
+mixin grouping(subforumsdata)
+    each storythread of subforumsdata
+        if storythread != undefined
+            day
+                h2 #{storythread.date.FullDay} #{storythread.date.Date} #{storythread.date.FullMonth}
+                storylist
+                    each storethread of storythread.objects
+                        +story(storethread)

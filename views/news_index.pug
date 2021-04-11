@@ -1,5 +1,7 @@
 extends news_main.pug
+include mixin.pug
 block content
     include news_highlights.pug
-    // news items
-    include news_listing.pug
+    news
+        +grouping(subforumitems)  
+    

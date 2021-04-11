@@ -1,6 +1,25 @@
-// we could.. in theory
 extends news_main.pug
+include mixin.pug
 block content
     include news_highlights.pug
     // news items
-    include news_listing.pug
+    - var myarray = []
+    - myarray = []
+    -var count =  0
+    news
+        each itemgroup in subforumitems
+            day
+                - count =  0
+                each storedthread in itemgroup.objects
+                    if storedthread.subforumId == subforumid
+                        if myarray[itemgroup.id] == undefined
+                            - count++
+                if count > 0
+                    h2 #{itemgroup.date.FullDay} #{itemgroup.date.Date} #{itemgroup.date.FullMonth}
+                    storylist
+                        each storedthread in itemgroup.objects
+                            if storedthread.subforumId == subforumid
+                                if myarray[itemgroup.id] == undefined
+                                    +story(storedthread)
+    news
+        +grouping(myarray)
