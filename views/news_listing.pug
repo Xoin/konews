@@ -1,7 +1,7 @@
 news
     each group in items
         day
-            h2 #{group.createdAt.FullDay} #{group.createdAt.Date} #{group.createdAt.FullMonth}
+            h2 #{group.date.FullDay} #{group.date.Date} #{group.date.FullMonth}
             storylist
                 each storyitem in group.objects
                     story

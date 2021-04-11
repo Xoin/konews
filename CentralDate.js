@@ -25,14 +25,13 @@ function Get(jsdate) {
     let result = {
         Date: workingdate.getDate(),
         Day: workingdate.getDay(),
-        FullYear: workingdate.FullYear(),
+        FullYear: workingdate.getFullYear(),
         Hours: temphours,
         Minutes: tempminutes,
         Month: workingdate.getMonth() + 1,
         Seconds: workingdate.getSeconds(),
         Time: workingdate.getTime(),
         TimezoneOffset: workingdate.getTimezoneOffset(),
-        String: workingdate.String(),
         TimeString: temphours + ":" + tempminutes,
         FullDay: Weekdays[workingdate.getDay()],
         FullMonth: Months[workingdate.getMonth()]

@@ -80,8 +80,8 @@ async function FetchThread(id) {
   else {
     // Do we know this thread?
     if (!storage.threadid.includes(id)) {
-      data.createdAt = CentralDate.Get(xelement.createdAt) // Convert date to date array
-      data.updatedAt = CentralDate.Get(xelement.updatedAt) //  Convert date to date array
+      data.createdAt = CentralDate.Get(data.createdAt) // Convert date to date array
+      data.updatedAt = CentralDate.Get(data.updatedAt) //  Convert date to date array
       // Loop all posts in thread
       for (let index = 0; index < data.posts.length; index++) {
         data.posts[index].content = bbcode.render(data.posts[index].content) // Convert post bbcode to html
@@ -266,7 +266,7 @@ app.get('/view/:id', async (req, res) => {
     if (!storage.threadid.includes(req.params.id)) {
       thread = await FetchThread(req.params.id);
     }
-      res.render("news_view", { thread: thread, page: 'article', menu: storage.menusubforum })
+      res.render("news_view", { thread: storage.thread[req.params.id], page: 'article', menu: storage.menusubforum })
     }
     else {
       res.send(storage.threadrender[req.params.id]);
