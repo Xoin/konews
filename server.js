@@ -154,15 +154,15 @@ async function FrontpageInterval() {
         // Store that this exists thread
         storage.threadidvalid.push(xelement.id.toString())
         // Does the group exist?
-        if (tempstorage.subforum[xelement.dateshort] == undefined) {
+        if (tempstorage.subforum[ThreadDate.dateshort] == undefined) {
           // Creat a group, using time as a unique ID
-          tempstorage.subforum[xelement.dateshort] = { id: ThreadDate.Time, objects: [], date: ThreadDate }
+          tempstorage.subforum[ThreadDate.dateshort] = { id: ThreadDate.Time, objects: [], date: ThreadDate }
           // push threads to group
-          tempstorage.subforum[xelement.dateshort].objects.push(xelement)
+          tempstorage.subforum[ThreadDate.dateshort].objects.push(xelement)
         }
         else {
           // push threads to group
-          tempstorage.subforum[xelement.dateshort].objects.push(xelement)
+          tempstorage.subforum[ThreadDate.dateshort].objects.push(xelement)
         }
       }
       // Store pinned and not locked threads seperate
