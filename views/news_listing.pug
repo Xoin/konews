@@ -1,13 +1,13 @@
 news
     each group in items
         day
-            h2 #{group.date.DayFull} #{group.date.Date} #{group.date.MonthFull}
+            h2 #{group.createdAt.FullDay} #{group.createdAt.Date} #{group.createdAt.FullMonth}
             storylist
                 each storyitem in group.objects
                     story
                         div(class="icon")
                             div(class="forum-"+storyitem.subforumId) #{storyitem.subforumName}
-                        div(class="time") #{storyitem.date.Hour}:#{storyitem.date.Minute}
+                        div(class="time") #{storyitem.createdAt.TimeString}
                         div(class="title")
                             a(href="view/"+storyitem.id+"#article") #{storyitem.title}
                         div(class="comments")

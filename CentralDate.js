@@ -3,8 +3,8 @@ Turn this in a class so we can dateformat like a normal language
 */
 
 function Get(jsdate) {
-    const Weekdays=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-    const Months=["January","February","March","April","May","June","July","August","September","October","November","December"];
+    const Weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const Months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     let workingdate
     if (jsdate == undefined) {
         workingdate = new Date()
@@ -14,24 +14,31 @@ function Get(jsdate) {
     }
 
     let tempminutes = workingdate.getMinutes()
-    let temphours= workingdate.getHours()
+    let temphours = workingdate.getHours()
     if (tempminutes < 10) {
-      tempminutes="0"+tempminutes.toString()
+        tempminutes = "0" + tempminutes.toString()
     }
     if (temphours < 10) {
-      temphours="0"+temphours.toString()
+        temphours = "0" + temphours.toString()
     }
 
     let result = {
-        Hour: temphours,
-        Minute: tempminutes,
         Date: workingdate.getDate(),
-        Month: workingdate.getMonth()+1,
-        Year: workingdate.getFullYear(),
-        Time: workingdate.getTime(),
         Day: workingdate.getDay(),
-        DayFull: Weekdays[workingdate.getDay()],
-        MonthFull: Months[workingdate.getMonth()]
+        FullYear: workingdate.FullYear(),
+        Hours: temphours,
+        Minutes: tempminutes,
+        Month: workingdate.getMonth() + 1,
+        Seconds: workingdate.getSeconds(),
+        Time: workingdate.getTime(),
+        TimezoneOffset: workingdate.getTimezoneOffset(),
+        String: workingdate.String(),
+        TimeString: temphours + ":" + tempminutes,
+        FullDay: Weekdays[workingdate.getDay()],
+        FullMonth: Months[workingdate.getMonth()]
+    }
+    if (jsdate != undefined) {
+        result.Source = jsdate
     }
     return result;
 }

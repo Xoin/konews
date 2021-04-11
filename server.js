@@ -80,13 +80,11 @@ async function FetchThread(id) {
   else {
     // Do we know this thread?
     if (!storage.threadid.includes(id)) {
-      data.date = CentralDate.Get(data.createdAt) // remove
       data.createdAt = CentralDate.Get(xelement.createdAt) // Convert date to date array
       data.updatedAt = CentralDate.Get(xelement.updatedAt) //  Convert date to date array
       // Loop all posts in thread
       for (let index = 0; index < data.posts.length; index++) {
         data.posts[index].content = bbcode.render(data.posts[index].content) // Convert post bbcode to html
-        data.posts[index].date = CentralDate.Get(data.posts[index].createdAt) // remove
         data.posts[index].createdAt = CentralDate.Get(data.posts[index].createdAt) // Convert date to date array
         data.posts[index].updatedAt = CentralDate.Get(data.posts[index].updatedAt) // Convert date to date array
       }
@@ -146,15 +144,15 @@ async function FrontpageInterval() {
       let ThreadDate = CentralDate.Get(xelement.createdAt) // remove
       xelement.date = ThreadDate // remove
       // Create a date format for grouping
-      xelement.dateshort = ThreadDate.Date + "-" + ThreadDate.Month + "-" + ThreadDate.Year
+      ThreadDate.dateshort = ThreadDate.Date + "-" + ThreadDate.Month + "-" + ThreadDate.FullYear
       // Convert dates to array
       xelement.createdAt = CentralDate.Get(xelement.createdAt)
       xelement.updatedAt = CentralDate.Get(xelement.updatedAt)
       // Store in which subforum the thread is in
       xelement.subforumName = targetssubforums.name
       // Ignore pinned and locked. Only get this years and recent months
-      if (!xelement.pinned && !xelement.locked && xelement.date.Year == rundate.Year && xelement.date.Month >= (rundate.Month - 2)) {
-        // Store that this thread
+      if (!xelement.pinned && !xelement.locked && xelement.createdAt.FullYear == rundate.FullYear && xelement.createdAt.Month >= (rundate.Month - 2)) {
+        // Store that this exists thread
         storage.threadidvalid.push(xelement.id.toString())
         // Does the group exist?
         if (tempstorage.subforum[xelement.dateshort] == undefined) {
