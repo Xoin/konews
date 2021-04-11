@@ -9,7 +9,7 @@ block content
                     img(src="https://cdn.knockout.chat/image/"+thread.user.avatarUrl)
                 misc
                     user #{thread.user.username}
-                    time #{thread.date.DayFull} #{thread.date.Date} #{thread.date.MonthFull} #{thread.date.Year}  #{thread.date.Hour}:#{thread.date.Minute} 
+                    time #{thread.createdAt.FullDay} #{thread.createdAt.Date} #{thread.createdAt.FullMonth} #{thread.createdAt.FullYear} #{thread.createdAt.TimeString}
                 postlink
                     a(href="https://knockout.chat/thread/"+thread.id) ##{thread.id}
             spacer
@@ -27,7 +27,7 @@ block content
                                     img(src="https://cdn.knockout.chat/image/"+post.user.avatarUrl)
                                 misc
                                     user #{post.user.username}
-                                    time #{post.date.DayFull} #{post.date.Date} #{post.date.MonthFull} #{post.date.Year}  #{post.date.Hour}:#{post.date.Minute}
+                                    time #{post.createdAt.FullDay} #{post.createdAt.Date} #{post.createdAt.FullMonth} #{post.createdAt.FullYear} #{post.createdAt.TimeString}
                                 postlink
                                     a(href="https://knockout.chat/thread/"+post.thread+"/"+post.page+"#post-"+post.id) ##{post.id}
                         bbcode
