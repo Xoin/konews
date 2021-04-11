@@ -35,7 +35,6 @@ else {
 
 
 // subforum ids
-//const subforums = [4];
 const subforums = [1, 3, 4, 5, 6]; // add subforum names, pass to render
 const kourl = "https://api.knockout.chat/"
 
