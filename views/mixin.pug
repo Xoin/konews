@@ -2,7 +2,7 @@ mixin story(storydata)
     story
         div(class="icon")
             div(class="forum-"+storydata.subforumId) #{storydata.subforumName}
-        //div(class="time") #{item.createdAt.TimeString}
+        div(class="time") #{item.createdAt.TimeString}
         div(class="title")
             a(href="/view/"+storydata.id+"#article") #{storydata.title}
         div(class="comments")
