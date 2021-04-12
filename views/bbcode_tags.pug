@@ -42,6 +42,10 @@ case parse.tag
     when "code"
         div(class="code")
             pre #{parse.inner}
+    when "blockquote"
+        . Nested quote
+    when "quote" blockquote
+        . Nested quote
     default
         .
             #{parse}
