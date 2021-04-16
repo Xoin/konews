@@ -211,8 +211,10 @@ bbcode {
     font-size: 13px;
     line-height: 1.6;
     & blockquote {
-        background: rgb(228, 228, 228);
-        border-radius: 0.6em;
+        
+        background: #ebebeb;
+        border: #747474 0.1em solid;
+        border-left: #16b3ff 0.2em solid;
         padding: 1em;
     }
     br {
@@ -313,7 +315,7 @@ spacer {
 @media (orientation: portrait) {
     .header,.content {
         border-radius: 0em;
-        padding: 0.2em;
+        padding: 0.6em;
     }
     body {
         margin: 0em;
@@ -352,12 +354,17 @@ spacer {
             & storylist {
                 border-top: 0.2em solid #e8eaea;
                 & story {
-                    & .icon, & .comments {
+                    & .comments {
                         display: none;
-                        border-bottom: 1em solid #e8eaea;
+                        border-bottom: 0.1em solid #e8eaea;
+                        padding: 1em 0.5em 1em 0.5em;
+                    }
+                    & .time {
+                        vertical-align: middle;
                     }
                     & .time, & .title {
-                        border-bottom: 0.2em solid #e8eaea;
+                        border-bottom: 0.1em solid #e8eaea;
+                        padding: 1em 0.5em 1em 0.5em;
                     }
                 }
             }
@@ -376,6 +383,11 @@ spacer {
                     display: block;
                 }
             }
+        }
+    }
+    replys {
+        & .body {
+            margin: 0em 0em 0.5em 0em;
         }
     }
 }

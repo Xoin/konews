@@ -146,9 +146,8 @@ async function FrontpageInterval() {
       const xelement = targetssubforums.threads[xindex];
       Logger("FrontpageInterval", 3, "Scanning sub " + xelement.id)
       // Count up the viewers
-      xelement.viewers = (xelement.viewers.memberCount + xelement.viewers.guestCount) // Should probably not overwrite but add
+      xelement.viewers.total = (xelement.viewers.memberCount + xelement.viewers.guestCount)
       let ThreadDate = CentralDate.Get(xelement.createdAt) // remove
-      xelement.date = ThreadDate // remove
       // Create a date format for grouping
       ThreadDate.dateshort = ThreadDate.Date + "-" + ThreadDate.Month + "-" + ThreadDate.FullYear
       // Convert dates to array
