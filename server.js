@@ -278,12 +278,14 @@ app.get('/view/:id', async (req, res) => {
   // Do we know this article?
   if (storage.threadidvalid.includes(req.params.id) || devmode) {
     // Rerender in devmode, else static
+    let thread;
+    // Load the thread if not stored while in devmode
+    if (!storage.threadid.includes(req.params.id)) {
+      thread = await FetchThread(req.params.id);
+    }
+
     if (devmode) {
-      let thread;
-      // Load the thread if not stored while in devmode
-      if (!storage.threadid.includes(req.params.id)) {
-        thread = await FetchThread(req.params.id);
-      }
+
       res.render("news_view", { thread: storage.thread[req.params.id], page: 'article', menu: storage.menusubforum })
     }
     else {
