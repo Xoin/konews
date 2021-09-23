@@ -2,7 +2,7 @@
 Turn this in a class so we can dateformat like a normal language
 */
 
-function Get(jsdate) {
+function CentralDate(jsdate) {
     const Weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const Months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     let workingdate
@@ -41,7 +41,9 @@ function Get(jsdate) {
     }
     return result;
 }
+const rundate = CentralDate();
 
 module.exports = {
-    Get: Get
+    CentralDate,
+    rundate
 };

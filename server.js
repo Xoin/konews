@@ -8,9 +8,7 @@ const { FrontpageInterval } = require("./FrontpageInterval");
 const { Logger } = require("./Logger");
 const { CompareNumbers } = require("./CompareNumbers");
 const { ThreadStorage } = require("./ThreadStorage");
-const { devmode, loglevel, port } = require("./port");
-const rundate = CentralDate.Get();
-exports.rundate = rundate;
+let { devmode, loglevel, port } = require("./port");
 
 const starargs = process.argv.slice(2);
 if (starargs[0] == "dev") {
