@@ -9,10 +9,7 @@ mixin story(storydata)
             a(href="/view/"+storydata.id+"#comments") #{storydata.postCount-1}
 
 mixin grouping(subforumsdata)
-    each storythread of subforumsdata
-        if storythread != undefined
-            day
-                h2 #{storythread.date.FullDay} #{storythread.date.Date} #{storythread.date.FullMonth}
-                storylist
-                    each storethread of storythread.objects
-                        +story(storethread)
+    day
+        h2 #{subforumsdata.date.FullDay} #{subforumsdata.date.Date} #{subforumsdata.date.FullMonth}
+        storylist
+            block

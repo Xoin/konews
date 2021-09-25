@@ -11,8 +11,8 @@ tags.h3 = (obj) => { return obj; }
 tags.li = (obj) => { return obj; }
 tags.ul = (obj) => { return obj; }
 tags.ol = (obj) => { return obj; }
-tags.img = (obj) => {return obj; }
-tags.url = (obj) => {return obj; }
+tags.img = (obj) => { return obj; }
+tags.url = (obj) => { return obj; }
 tags.twitter = (obj) => { return obj; }
 tags.youtube = (obj) => { return obj; }
 tags.vimeo = (obj) => { return obj; }

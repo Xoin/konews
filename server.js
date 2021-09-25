@@ -2,12 +2,9 @@ const express = require('express')
 const expressLess = require('express-less');
 const compression = require('compression')
 const app = express()
-const CentralDate = require('./CentralDate');
-const { FetchThread } = require("./FetchThread");
-const { FrontpageInterval } = require("./FrontpageInterval");
 const { Logger } = require("./Logger");
-const { CompareNumbers } = require("./CompareNumbers");
-const { ThreadStorage } = require("./ThreadStorage");
+
+const ThreadStorage = require("./ThreadStorage");
 let { devmode, loglevel, port } = require("./port");
 
 const starargs = process.argv.slice(2);
@@ -25,14 +22,21 @@ else {
   loglevel = 0
 }
 
+let ThreadStore = new ThreadStorage.Thread()
 
-const FrontPageIntervalTime = 900000;
+const FrontPageIntervalTime = 1800000;
+let SubFroumStorage = new ThreadStorage.Index()
+
 const maxtopitems = 6
 
 // setup
 Logger("Start", 0, "Starting can be slow")
-FrontpageInterval();
 
+async function FrontpageInterval() {
+  Logger("FrontpageInterval", 2, "Request");
+  await SubFroumStorage.UpdateAll()
+}
+FrontpageInterval();
 setInterval(FrontpageInterval, FrontPageIntervalTime);
 
 app.use(express.static('public'))
@@ -49,27 +53,6 @@ if (devmode) {
     res.redirect('/')
   })
 
-  // sort it by hand
-  app.get('/resort', async (req, res) => {
-    Logger("app/resort", 1, "forcing sorting")
-    ThreadStorage.SubForum.sort(CompareNumbers) // Broken?
-    res.redirect('/')
-  })
-
-  app.get('/api/frontpage', async (req, res) => {
-    res.send({ subforumitems: JSON.parse(JSON.stringify(ThreadStorage.SubForum)), top: ThreadStorage.TopItems, page: 'home', menu: ThreadStorage.MenuSubForum });
-  })
-
-  app.get('/api/subforum/:id', async (req, res) => {
-    res.send({ subforumitems: JSON.parse(JSON.stringify(ThreadStorage.SubForum)), top: ThreadStorage.TopItems, page: 'subforum', subforumid: parseInt(req.params.id), menu: ThreadStorage.MenuSubForum });
-  })
-  app.get('/api/view/:id', async (req, res) => {
-    res.send({ thread: ThreadStorage.Thread[req.params.id], page: 'article', menu: ThreadStorage.MenuSubForum });
-  })
-  app.get('/api/view/:id', async (req, res) => {
-    res.send(ThreadStorage);
-  })
-
 }
 else {
   app.use('/less-css', expressLess(__dirname + '/less', { cache: true, compress: true }));
@@ -79,45 +62,22 @@ else {
 // Land page
 app.get('/', async (req, res) => {
   Logger("app/", 2, "Frontpage load")
-  // Rerender in devmode, else static
-  if (devmode) {
-    res.render('news_index', { subforumitems: JSON.parse(JSON.stringify(ThreadStorage.SubForum)), top: ThreadStorage.TopItems, page: 'home', menu: ThreadStorage.MenuSubForum })
-  }
-  else {
-    res.send(ThreadStorage.Frontpage);
-  }
-
+  res.send(SubFroumStorage.IndexRender);
 })
 
 app.get('/subforum/:id', async (req, res) => {
-  if (devmode) {
-    res.render('news_subforum', { subforumitems: JSON.parse(JSON.stringify(ThreadStorage.SubForum)), top: ThreadStorage.TopItems, page: 'subforum', subforumid: parseInt(req.params.id), menu: ThreadStorage.MenuSubForum })
-  }
-  else {
-    res.send(ThreadStorage.SubForumRender[req.params.id]);
-  }
+  Logger("/subforum/:id", 2, 'reqeust for ' + req.params.id)
+  res.send(SubFroumStorage.GetRenderSubForum(req.params.id));
+
 })
 
 // Articles
 app.get('/view/:id', async (req, res) => {
   Logger("/view/:id", 2, 'reqeust for ' + req.params.id)
-  // Do we know this article?
-  if (ThreadStorage.ThreadInvalid.includes(req.params.id) || devmode) {
-    // Rerender in devmode, else static
-    let thread;
-    // Load the thread if not stored while in devmode
-    if (!ThreadStorage.ThreadID.includes(req.params.id)) {
-      thread = await FetchThread(req.params.id);
-    }
-
-    if (devmode) {
-
-      res.render("news_view", { thread: ThreadStorage.Thread[req.params.id], page: 'article', menu: ThreadStorage.MenuSubForum })
-    }
-    else {
-      res.send(ThreadStorage.ThreadRender[req.params.id]);
-    }
-
+  const request = await ThreadStore.AddThread(req.params.id)
+  console.log(request)
+  if (request) {
+    res.send(ThreadStore.GetRender(req.params.id));
   }
   else {
     res.redirect('/');

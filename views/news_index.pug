@@ -3,5 +3,14 @@ include mixin.pug
 block content
     include news_highlights.pug
     news
-        +grouping(subforumitems)  
-    
+        each itemgroup, index in subforumitems
+            if subforumitems[index-1] == undefined
+                +grouping(itemgroup)
+                    each storyitem in subforumitems
+                        if storyitem.dateshort == itemgroup.dateshort
+                            +story(storyitem)
+            else if subforumitems[index-1].dateshort != itemgroup.dateshort
+                +grouping(itemgroup)
+                    each storyitem in subforumitems
+                        if storyitem.dateshort == itemgroup.dateshort
+                            +story(storyitem)

@@ -7,19 +7,15 @@ block content
     - myarray = []
     -var count =  0
     news
-        each itemgroup in subforumitems
-            day
-                - count =  0
-                each storedthread in itemgroup.objects
-                    if storedthread.subforumId == subforumid
-                        if myarray[itemgroup.id] == undefined
-                            - count++
-                if count > 0
-                    h2 #{itemgroup.date.FullDay} #{itemgroup.date.Date} #{itemgroup.date.FullMonth}
-                    storylist
-                        each storedthread in itemgroup.objects
-                            if storedthread.subforumId == subforumid
-                                if myarray[itemgroup.id] == undefined
-                                    +story(storedthread)
-    news
-        +grouping(myarray)
+        each itemgroup, index in subforumitems
+            if subforumitems[index-1] == undefined
+                if itemgroup.subforumId == subforumid
+                    +grouping(itemgroup)
+                        each storyitem in subforumitems
+                            if storyitem.dateshort == itemgroup.dateshort && storyitem.subforumId == subforumid
+                                +story(storyitem)
+            else if subforumitems[index-1].dateshort != itemgroup.dateshort && itemgroup.subforumId == subforumid
+                +grouping(itemgroup)
+                    each storyitem in subforumitems
+                        if storyitem.dateshort == itemgroup.dateshort && storyitem.subforumId == subforumid
+                            +story(storyitem)
